@@ -343,7 +343,8 @@ const intakeIssueRows = [
     icePacks: "No",
     parafilm: "Yes",
     lowVolume: "No",
-    tissue: "ADI",
+    tissueType: "ADI",
+    issueType: ["Delayed sample", "Temperature issue", "Incorrect ice packs"],
     clinic: "Clinic A",
     issueDate: "05/08/2026",
   },
@@ -355,7 +356,8 @@ const intakeIssueRows = [
     icePacks: "Yes",
     parafilm: "No",
     lowVolume: "Yes",
-    tissue: "BM",
+    tissueType: "BM",
+    issueType: ["Missing parafilm", "Low volume"],
     clinic: "Clinic B",
     issueDate: "05/14/2026",
   },
@@ -367,7 +369,8 @@ const intakeIssueRows = [
     icePacks: "No",
     parafilm: "Yes",
     lowVolume: "No",
-    tissue: "NB - Cord Blood",
+    tissueType: "NB - Cord Blood",
+    issueType: ["Delayed sample", "Temperature issue", "Incorrect ice packs"],
     clinic: "Clinic C",
     issueDate: "05/03/2026",
   },
@@ -379,7 +382,8 @@ const intakeIssueRows = [
     icePacks: "Yes",
     parafilm: "No",
     lowVolume: "Yes",
-    tissue: "NB - Cord Tissue",
+    tissueType: "NB - Cord Tissue",
+    issueType: ["Delayed sample", "Missing parafilm", "Low volume"],
     clinic: "Clinic A",
     issueDate: "05/11/2026",
   },
@@ -391,11 +395,20 @@ const intakeIssueRows = [
     icePacks: "No",
     parafilm: "No",
     lowVolume: "Yes",
-    tissue: "BM",
+    tissueType: "BM",
+    issueType: ["Delayed sample", "Temperature issue", "Incorrect ice packs", "Missing parafilm", "Low volume"],
     clinic: "Clinic B",
     issueDate: "05/09/2026",
   },
 ];
+
+function getIntakeIssueTypes(row) {
+  return Array.isArray(row.issueType) ? row.issueType : [row.issueType || "Intake review"];
+}
+
+function getIntakeIssueType(row) {
+  return getIntakeIssueTypes(row).join(", ");
+}
 
 const clientLineageRows = [
   {
@@ -1172,7 +1185,18 @@ function ControlledSelectField({ label, options, value, onChange }) {
   );
 }
 
-function SampleIntakeIssueFilters() {
+function SampleIntakeIssueFilters({
+  clinic,
+  issueType,
+  onClinicChange,
+  onIssueTypeChange,
+  onSearchChange,
+  onTimeRangeChange,
+  onTissueTypeChange,
+  search,
+  timeRange,
+  tissueType,
+}) {
   return (
     <Card className="rounded-lg shadow-sm">
       <CardContent className="grid gap-4 p-4 md:grid-cols-2 xl:grid-cols-5">
@@ -1182,15 +1206,17 @@ function SampleIntakeIssueFilters() {
             <Search size={16} />
             <input
               className="min-w-0 flex-1 bg-transparent text-slate-700 outline-none placeholder:text-slate-400"
+              onChange={(event) => onSearchChange(event.target.value)}
               placeholder="Client or batch ID"
               type="search"
+              value={search}
             />
           </span>
         </label>
-        <SelectField label="Time Range" options={["Last 30 days", "Last 7 days", "This month", "Last quarter", "Custom range"]} />
-        <SelectField label="Tissue Type" options={["All tissue types", "ADI", "BM", "NB - Cord Blood", "NB - Cord Tissue"]} />
-        <SelectField label="Issue Type" options={["All issue types", "Delayed sample", "Temperature issue", "Incorrect ice packs", "Missing parafilm", "Low volume"]} />
-        <SelectField label="Clinic" options={["All clinics", "Clinic A", "Clinic B", "Clinic C"]} />
+        <ControlledSelectField label="Time Range" onChange={onTimeRangeChange} options={["Last 30 days", "Last 7 days", "This month", "Last quarter", "Custom range"]} value={timeRange} />
+        <ControlledSelectField label="Tissue Type" onChange={onTissueTypeChange} options={["All tissue types", "ADI", "BM", "NB - Cord Blood", "NB - Cord Tissue"]} value={tissueType} />
+        <ControlledSelectField label="Issue Type" onChange={onIssueTypeChange} options={["All issue types", "Delayed sample", "Temperature issue", "Incorrect ice packs", "Missing parafilm", "Low volume"]} value={issueType} />
+        <ControlledSelectField label="Clinic" onChange={onClinicChange} options={["All clinics", "Clinic A", "Clinic B", "Clinic C"]} value={clinic} />
       </CardContent>
     </Card>
   );
@@ -1507,14 +1533,63 @@ function DiscardDashboard() {
 }
 
 function SampleIntakeIssuesReport() {
+  const [search, setSearch] = useState("");
+  const [timeRange, setTimeRange] = useState("Last 30 days");
+  const [tissueType, setTissueType] = useState("All tissue types");
+  const [issueType, setIssueType] = useState("All issue types");
+  const [clinic, setClinic] = useState("All clinics");
+
+  const filteredRows = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const currentDate = new Date("2026-05-28T12:00:00");
+    const rangeDays =
+      timeRange === "Last 7 days"
+        ? 7
+        : timeRange === "Last 30 days" || timeRange === "This month" || timeRange === "Custom range"
+          ? 30
+          : timeRange === "Last quarter"
+            ? 90
+            : null;
+
+    return intakeIssueRows.filter((row) => {
+      const rowDate = new Date(`${row.issueDate} 12:00:00`);
+      const daysOld = (currentDate - rowDate) / (1000 * 60 * 60 * 24);
+      const rowIssueTypes = getIntakeIssueTypes(row);
+      const rowIssueType = rowIssueTypes.join(" ");
+      const matchesTimeRange = rangeDays === null || daysOld <= rangeDays;
+      const matchesTissue = tissueType === "All tissue types" || row.tissueType === tissueType;
+      const matchesIssue = issueType === "All issue types" || rowIssueTypes.includes(issueType);
+      const matchesClinic = clinic === "All clinics" || row.clinic === clinic;
+      const matchesSearch =
+        !query ||
+        [row.client, row.batch, row.tissueType, row.clinic, rowIssueType]
+          .join(" ")
+          .toLowerCase()
+          .includes(query);
+
+      return matchesSearch && matchesTimeRange && matchesTissue && matchesIssue && matchesClinic;
+    });
+  }, [clinic, issueType, search, timeRange, tissueType]);
+
   return (
     <DashboardShell>
-      <SampleIntakeIssueFilters />
+      <SampleIntakeIssueFilters
+        clinic={clinic}
+        issueType={issueType}
+        onClinicChange={setClinic}
+        onIssueTypeChange={setIssueType}
+        onSearchChange={setSearch}
+        onTimeRangeChange={setTimeRange}
+        onTissueTypeChange={setTissueType}
+        search={search}
+        timeRange={timeRange}
+        tissueType={tissueType}
+      />
       <DataTable
         title="Sample Intake Issues"
         description="Samples with intake condition, packaging, delay, or low-volume flags."
-        columns={["Client ID", "Cell Batch ID", "Sample Delayed by How Many Days", "Temperature of Sample", "Correct Ice Packs Used", "Parafilm Used", "Low Volume"]}
-        rows={intakeIssueRows.map(r => [r.client, r.batch, `${r.delayedDays} day${r.delayedDays === 1 ? "" : "s"}`, r.temperature, <FlagBadge value={r.icePacks} />, <FlagBadge value={r.parafilm} />, <FlagBadge value={r.lowVolume} />])}
+        columns={["Client ID", "Cell Batch ID", "Clinic", "Issue Type", "Tissue Type", "Sample Delayed by How Many Days", "Temperature of Sample", "Correct Ice Packs Used", "Parafilm Used", "Low Volume"]}
+        rows={filteredRows.map(r => [r.client, r.batch, r.clinic, <Badge tone="yellow">{getIntakeIssueType(r)}</Badge>, r.tissueType, `${r.delayedDays} day${r.delayedDays === 1 ? "" : "s"}`, r.temperature, <FlagBadge value={r.icePacks} />, <FlagBadge value={r.parafilm} />, <FlagBadge value={r.lowVolume} />])}
       />
     </DashboardShell>
   );
