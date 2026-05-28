@@ -1468,10 +1468,6 @@ function SlowGrowthDashboard() {
         searchValue={search}
         showTags={false}
       />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="rounded-lg shadow-sm lg:col-span-2"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Growth Exceptions by Days Growing</h2><SimpleBarVisual label="8–10 days" value={1} max={3} /><SimpleBarVisual label="11–14 days" value={2} max={3} /><SimpleBarVisual label="15+ days" value={1} max={3} /></CardContent></Card>
-        <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Stage Split</h2><SimpleBarVisual label="Initial" value={3} max={4} /><SimpleBarVisual label="Replate" value={1} max={4} /></CardContent></Card>
-      </div>
       <DataTable columns={["Client ID", "Batch ID", "Initial or Replate", "Days Growing", "Shipment", "Initial", "Quarantine"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="blue">{r.stage}</Badge>, `${r.days} days`, <FlagBadge value={r.shipment} />, <FlagBadge value={r.initial} />, <FlagBadge value={r.quarantine} />])} />
     </DashboardShell>
   );
