@@ -36,7 +36,7 @@ const dashboards = [
   "Discard",
 ];
 
-const topLevelTabs = ["Live Look", "QA Reports", "Reports"];
+const topLevelTabs = ["Batch Operational Dashboards", "Lab Operational Dashboard", "Reports"];
 const reportTabs = [
   "Sample Intake Issues",
   "Client Lineage / Batch History",
@@ -75,57 +75,6 @@ function Button({ children, variant = "primary", className = "", ...props }) {
       {children}
     </button>
   );
-}
-
-function downloadCsv(filename, rows) {
-  const csv = rows
-    .map((row) =>
-      row
-        .map((value) => {
-          const stringValue = String(value ?? "");
-          return `"${stringValue.replaceAll('"', '""')}"`;
-        })
-        .join(","),
-    )
-    .join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
-function exportCleanroomRows(rows) {
-  downloadCsv("lab-cleanroom-report.csv", [
-    [
-      "Technician",
-      "Tissue Type",
-      "Flask Size",
-      "Average Vials Yielded",
-      "Viability",
-      "Cell Count",
-      "Average Time to Grow",
-      "Standard Deviation of Vials Yielded",
-      "Number of Freezings",
-      "Number of Passagings",
-      "Number of Discards",
-    ],
-    ...rows.map((row) => [
-      row.technician,
-      row.tissue,
-      row.flask,
-      row.vials,
-      row.viability,
-      row.cellCount,
-      row.growTime,
-      row.stdDev,
-      row.freezings,
-      row.passagings,
-      row.discards,
-    ]),
-  ]);
 }
 
 const quarantineRows = [
@@ -529,8 +478,6 @@ const cleanroomRows = [
     flask: "1-stack",
     vials: 18.2,
     confluency: "86%",
-    viability: "94%",
-    cellCount: "2.4M",
     growTime: "74 hrs",
     stdDev: 2.4,
     freezings: 14,
@@ -544,8 +491,6 @@ const cleanroomRows = [
     flask: "2-stack",
     vials: 15.7,
     confluency: "82%",
-    viability: "91%",
-    cellCount: "1.8M",
     growTime: "91 hrs",
     stdDev: 3.1,
     freezings: 10,
@@ -559,8 +504,6 @@ const cleanroomRows = [
     flask: "5-stack",
     vials: 22.4,
     confluency: "89%",
-    viability: "96%",
-    cellCount: "3.1M",
     growTime: "104 hrs",
     stdDev: 4.2,
     freezings: 8,
@@ -574,8 +517,6 @@ const cleanroomRows = [
     flask: "2-stack",
     vials: 16.9,
     confluency: "84%",
-    viability: "92%",
-    cellCount: "2.0M",
     growTime: "96 hrs",
     stdDev: 2.8,
     freezings: 11,
@@ -589,8 +530,6 @@ const cleanroomRows = [
     flask: "5-stack",
     vials: 25.1,
     confluency: "91%",
-    viability: "97%",
-    cellCount: "3.5M",
     growTime: "80 hrs",
     stdDev: 3.6,
     freezings: 9,
@@ -969,297 +908,6 @@ const reagentRows = [
     process: "Culture Growth",
     quantity: "76%",
     notes: "No exceptions.",
-  },
-];
-
-const liveLookRows = [
-  {
-    client: "H4012",
-    batch: "H4012-A01-P0-P20260508-01",
-    tissue: "ADI",
-    passage: "P0",
-    status: "In Expansion",
-    process: "Passaging",
-    technician: "Technician A",
-    daysInStage: 5,
-    expected: "5-7 days",
-    flag: "Expansion active",
-    nextStep: "Passage and recheck confluency",
-    updated: "05/29/2026 08:15 AM",
-  },
-  {
-    client: "H4205",
-    batch: "H4205-BM01-P1-P20260514-01",
-    tissue: "BM",
-    passage: "P1",
-    status: "In Expansion",
-    process: "Passaging",
-    technician: "Technician B",
-    daysInStage: 12,
-    expected: "7-10 days",
-    flag: "Slow growth review",
-    nextStep: "QA review before replate",
-    updated: "05/29/2026 08:05 AM",
-  },
-  {
-    client: "H3988",
-    batch: "H3988-CB01-P0-P20260503-01",
-    tissue: "NB - Cord Blood",
-    passage: "P0",
-    status: "Received",
-    process: "Isolation",
-    technician: "Technician C",
-    daysInStage: 15,
-    expected: "8-12 days",
-    flag: "No growth observed",
-    nextStep: "Escalate for discard decision",
-    updated: "05/29/2026 07:55 AM",
-  },
-  {
-    client: "H4150",
-    batch: "H4150-CT01-P0-P20260511-01",
-    tissue: "NB - Cord Tissue",
-    passage: "P0",
-    status: "In Expansion",
-    process: "Isolation",
-    technician: "Technician D",
-    daysInStage: 8,
-    expected: "7-9 days",
-    flag: "Harvest window",
-    nextStep: "Count cells and prep freeze",
-    updated: "05/29/2026 08:25 AM",
-  },
-  {
-    client: "H4077",
-    batch: "H4077-A01-P0-P20260510-02",
-    tissue: "ADI",
-    passage: "P0",
-    status: "In Q2",
-    process: "Freezing",
-    technician: "Technician A",
-    daysInStage: 1,
-    expected: "Same day",
-    flag: "Q2 review before LN2 transfer",
-    nextStep: "Move to inventory after QC",
-    updated: "05/29/2026 08:40 AM",
-  },
-  {
-    client: "H4302",
-    batch: "H4302-A01-P0-P20260512-01",
-    tissue: "ADI",
-    passage: "P0",
-    status: "In Expansion",
-    process: "Replate",
-    technician: "Technician B",
-    daysInStage: 6,
-    expected: "5-7 days",
-    flag: "On track",
-    nextStep: "Confluency check tomorrow",
-    updated: "05/29/2026 07:45 AM",
-  },
-  {
-    client: "H4211",
-    batch: "H4211-BM01-P0-P20260509-01",
-    tissue: "BM",
-    passage: "P0",
-    status: "In Expansion",
-    process: "Replate",
-    technician: "Technician C",
-    daysInStage: 2,
-    expected: "2-3 days",
-    flag: "Replate active",
-    nextStep: "Document growth after replate",
-    updated: "05/29/2026 08:10 AM",
-  },
-  {
-    client: "H3902",
-    batch: "H3902-A01-P2-P20260428-01",
-    tissue: "ADI",
-    passage: "P2",
-    status: "Frozen LN2",
-    process: "Freezing",
-    technician: "Technician D",
-    daysInStage: 0,
-    expected: "Same day",
-    flag: "Stored in LN2",
-    nextStep: "Available for future request",
-    updated: "05/29/2026 07:30 AM",
-  },
-];
-
-const qaIssueRows = [
-  {
-    issueId: "QA-2026-051",
-    client: "H4012",
-    batch: "H4012-A01-P0-P20260508-01",
-    tissue: "ADI",
-    process: "Intake Form",
-    issueType: "Quarantine",
-    detail: "Sample received at 8.5°C; acceptable range exceeded.",
-    severity: "High",
-    qaStatus: "In Review",
-    assignedTo: "QA Specialist A",
-    dateIdentified: "05/24/2026",
-    daysOpen: 5,
-    shipmentImpact: "Yes",
-    resolutionNotes: "Reviewing clinic shipment log.",
-    technician: "Technician A",
-  },
-  {
-    issueId: "QA-2026-052",
-    client: "H4205",
-    batch: "H4205-BM01-P1-P20260514-01",
-    tissue: "BM",
-    process: "Passaging Form",
-    issueType: "Discard",
-    detail: "Passage time and sign-off timestamp do not match.",
-    severity: "Medium",
-    qaStatus: "Waiting on Lab",
-    assignedTo: "QA Specialist B",
-    dateIdentified: "05/22/2026",
-    daysOpen: 7,
-    shipmentImpact: "No",
-    resolutionNotes: "Awaiting corrected form.",
-    technician: "Technician B",
-  },
-  {
-    issueId: "QA-2026-053",
-    client: "H3988",
-    batch: "H3988-CB01-P0-P20260503-01",
-    tissue: "NB - Cord Blood",
-    process: "Growth Review",
-    issueType: "Slow/No Growth",
-    detail: "No visible expansion after expected review window.",
-    severity: "Critical",
-    qaStatus: "Open",
-    assignedTo: "QA Lead",
-    dateIdentified: "05/17/2026",
-    daysOpen: 12,
-    shipmentImpact: "No",
-    resolutionNotes: "Escalated for disposition decision.",
-    technician: "Technician C",
-  },
-  {
-    issueId: "QA-2026-054",
-    client: "H4150",
-    batch: "H4150-CT01-P0-P20260511-01",
-    tissue: "NB - Cord Tissue",
-    process: "Intake Form",
-    issueType: "Quarantine",
-    detail: "Parafilm use not documented at intake.",
-    severity: "Low",
-    qaStatus: "Resolved",
-    assignedTo: "QA Specialist A",
-    dateIdentified: "05/20/2026",
-    daysOpen: 2,
-    shipmentImpact: "No",
-    resolutionNotes: "Clinic confirmed packaging method.",
-    technician: "Technician D",
-  },
-  {
-    issueId: "QA-2026-055",
-    client: "H4077",
-    batch: "H4077-A01-P0-P20260510-02",
-    tissue: "ADI",
-    process: "Freezing Form",
-    issueType: "Discard",
-    detail: "Viability recorded at 78% before freeze.",
-    severity: "High",
-    qaStatus: "Open",
-    assignedTo: "QA Specialist C",
-    dateIdentified: "05/27/2026",
-    daysOpen: 2,
-    shipmentImpact: "Yes",
-    resolutionNotes: "Hold shipment until QA disposition.",
-    technician: "Technician A",
-  },
-  {
-    issueId: "QA-2026-056",
-    client: "H4211",
-    batch: "H4211-BM01-P0-P20260509-01",
-    tissue: "BM",
-    process: "Sterility Review",
-    issueType: "Quarantine",
-    detail: "Sterility confirmation not available by release window.",
-    severity: "Medium",
-    qaStatus: "Closed",
-    assignedTo: "QA Specialist B",
-    dateIdentified: "05/19/2026",
-    daysOpen: 6,
-    shipmentImpact: "Yes",
-    resolutionNotes: "Closed after passing result posted.",
-    technician: "Technician C",
-  },
-];
-
-const reportResultRows = [
-  {
-    tissue: "ADI",
-    tissueTypes: ["ADI"],
-    passage: "P0",
-    passages: ["P0", "P1"],
-    technician: "Technician A",
-    averageVialsFrozen: 18.2,
-    frozenVialsStdDev: 2.4,
-    averageConfluency: "86%",
-    averageViability: "94%",
-    averageCellCounts: "2.4M",
-    totalSamplesFrozen: 14,
-    averageDaysReceivingToFreezing: 9.4,
-    batchesIncluded: 6,
-    client: "H4012",
-    batch: "H4012-A01-P0-P20260508-01",
-  },
-  {
-    tissue: "BM",
-    tissueTypes: ["BM", "ADI"],
-    passage: "P1",
-    passages: ["P1"],
-    technician: "Technician B",
-    averageVialsFrozen: 15.7,
-    frozenVialsStdDev: 3.1,
-    averageConfluency: "82%",
-    averageViability: "91%",
-    averageCellCounts: "1.8M",
-    totalSamplesFrozen: 10,
-    averageDaysReceivingToFreezing: 11.2,
-    batchesIncluded: 5,
-    client: "H4205",
-    batch: "H4205-BM01-P1-P20260514-01",
-  },
-  {
-    tissue: "NB - Cord Blood",
-    tissueTypes: ["NB - Cord Blood"],
-    passage: "P0",
-    passages: ["P0"],
-    technician: "Technician C",
-    averageVialsFrozen: 11.4,
-    frozenVialsStdDev: 4.2,
-    averageConfluency: "76%",
-    averageViability: "82%",
-    averageCellCounts: "0.9M",
-    totalSamplesFrozen: 8,
-    averageDaysReceivingToFreezing: 14.8,
-    batchesIncluded: 4,
-    client: "H3988",
-    batch: "H3988-CB01-P0-P20260503-01",
-  },
-  {
-    tissue: "NB - Cord Tissue",
-    tissueTypes: ["NB - Cord Tissue", "ADI"],
-    passage: "P0",
-    passages: ["P0", "P2"],
-    technician: "Technician D",
-    averageVialsFrozen: 16.9,
-    frozenVialsStdDev: 2.8,
-    averageConfluency: "84%",
-    averageViability: "92%",
-    averageCellCounts: "2.0M",
-    totalSamplesFrozen: 11,
-    averageDaysReceivingToFreezing: 10.6,
-    batchesIncluded: 5,
-    client: "H4150",
-    batch: "H4150-CT01-P0-P20260511-01",
   },
 ];
 
@@ -2025,11 +1673,6 @@ function LabCleanroomReport() {
 
   return (
     <DashboardShell>
-      <div className="flex justify-end">
-        <Button className="gap-2 rounded-lg" onClick={() => exportCleanroomRows(filteredRows)}>
-          <FileText size={16} /> Export Report
-        </Button>
-      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
         <KpiCard title="Avg Vials Yielded" value={avg("vials")} note="Across cleanroom runs" icon={FlaskConical} />
         <KpiCard title="Avg Confluency" value={avgConfluency} note="Mean visual confluency" icon={Activity} />
@@ -2061,387 +1704,39 @@ function LabCleanroomReport() {
       <DataTable
         title="Lab Cleanroom Performance"
         description="Technician, tissue, flask, growth, yield, and event counts for cleanroom operations."
-        columns={["Technician", "Tissue Type", "Flask Size", "Average Vials Yielded", "Viability", "Cell Count", "Average Time to Grow", "Standard Deviation of Vials Yielded", "Number of Freezings", "Number of Passagings", "Number of Discards"]}
-        rows={filteredRows.map(r => [r.technician, r.tissue, r.flask, r.vials, r.viability, r.cellCount, r.growTime, r.stdDev, r.freezings, r.passagings, r.discards])}
+        columns={["Technician", "Tissue Type", "Flask Size", "Average Vials Yielded", "Average Time to Grow", "Standard Deviation of Vials Yielded", "Number of Freezings", "Number of Passagings", "Number of Discards"]}
+        rows={filteredRows.map(r => [r.technician, r.tissue, r.flask, r.vials, r.growTime, r.stdDev, r.freezings, r.passagings, r.discards])}
       />
     </DashboardShell>
   );
 }
 
-function countBy(rows, key) {
-  return rows.reduce((counts, row) => {
-    const value = typeof key === "function" ? key(row) : row[key];
-    counts[value] = (counts[value] || 0) + 1;
-    return counts;
-  }, {});
-}
-
-function makeBarsFromCounts(counts) {
-  const max = Math.max(1, ...Object.values(counts));
-  return Object.entries(counts).map(([label, value]) => (
-    <SimpleBarVisual key={label} label={label} value={value} max={max} />
-  ));
-}
-
-function uniqueCount(rows, key) {
-  return new Set(rows.map((row) => row[key])).size;
-}
-
-function parseMetricNumber(value) {
-  return Number.parseFloat(String(value).replace(/[^0-9.]/g, "")) || 0;
-}
-
-function formatOneDecimal(value) {
-  return Number.isFinite(value) ? value.toFixed(1) : "0.0";
-}
-
-function LiveStatusBadge({ value }) {
-  const tone =
-    value === "Received"
-      ? "blue"
-      : value === "In Expansion"
-        ? "green"
-        : value === "In Q2"
-          ? "yellow"
-          : value === "Frozen LN2"
-            ? "purple"
-            : "neutral";
-  return <Badge tone={tone}>{value}</Badge>;
-}
-
-function SeverityBadge({ value }) {
-  const tone = value === "Critical" ? "red" : value === "High" ? "yellow" : value === "Medium" ? "blue" : "neutral";
-  return <Badge tone={tone}>{value}</Badge>;
-}
-
-function QAStatusBadge({ value }) {
-  const tone =
-    value === "Open"
-      ? "red"
-      : value === "In Review" || value === "Waiting on Lab"
-        ? "yellow"
-        : value === "Resolved"
-          ? "green"
-          : "neutral";
-  return <Badge tone={tone}>{value}</Badge>;
-}
-
-function LiveLookDashboard() {
-  const [search, setSearch] = useState("");
-  const [technician, setTechnician] = useState("All technicians");
-  const [tissue, setTissue] = useState("All tissue types");
-  const [passage, setPassage] = useState("All passages");
-  const [status, setStatus] = useState("All statuses");
-  const [timeRange, setTimeRange] = useState("Today");
-
-  const filteredRows = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    return liveLookRows.filter((row) => {
-      const matchesSearch =
-        !query ||
-        [row.client, row.batch, row.tissue, row.passage, row.status, row.process, row.technician, row.flag, row.nextStep]
-          .join(" ")
-          .toLowerCase()
-          .includes(query);
-      const matchesTechnician = technician === "All technicians" || row.technician === technician;
-      const matchesTissue = tissue === "All tissue types" || row.tissue === tissue;
-      const matchesPassage = passage === "All passages" || row.passage === passage;
-      const matchesStatus = status === "All statuses" || row.status === status || row.process === status;
-
-      return matchesSearch && matchesTechnician && matchesTissue && matchesPassage && matchesStatus;
-    });
-  }, [passage, search, status, technician, tissue]);
-
-  return (
-    <div className="space-y-5">
-      <div>
-        <p className="text-sm font-medium text-slate-500">Live Operations</p>
-        <h1 className="text-3xl font-bold tracking-tight">Live Look</h1>
-        <p className="mt-2 max-w-4xl text-sm text-slate-600">
-          A clean lab log style view of what is happening in the lab right now across receiving, expansion, Q2 review, and LN2 storage.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <KpiCard title="Active Batches" value={liveLookRows.filter((r) => r.status !== "Frozen LN2").length} note="Not yet frozen in LN2" icon={Activity} />
-        <KpiCard title="Freezings" value={liveLookRows.filter((r) => r.process === "Freezing").length} note="Freeze or LN2 transfer work" icon={Snowflake} />
-        <KpiCard title="Passagings" value={liveLookRows.filter((r) => r.process === "Passaging").length} note="Passage tasks" icon={Layers} />
-        <KpiCard title="Isolations" value={liveLookRows.filter((r) => r.process === "Isolation").length} note="Isolation tasks" icon={FlaskConical} />
-        <KpiCard title="Replates" value={liveLookRows.filter((r) => r.process === "Replate").length} note="Replate tasks" icon={ClipboardCheck} />
-      </div>
-
-      <Card className="rounded-lg shadow-sm">
-        <CardContent className="grid gap-4 p-4 md:grid-cols-2 xl:grid-cols-6">
-          <label className="flex min-w-0 flex-col gap-1 text-sm md:col-span-2 xl:col-span-1">
-            <span className="font-medium text-slate-600">Search</span>
-            <span className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-slate-500">
-              <Search size={16} />
-              <input
-                className="min-w-0 flex-1 bg-transparent text-slate-700 outline-none placeholder:text-slate-400"
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Client, batch, status, process"
-                type="search"
-                value={search}
-              />
-            </span>
-          </label>
-          <ControlledSelectField label="Technician" options={["All technicians", "Technician A", "Technician B", "Technician C", "Technician D"]} value={technician} onChange={setTechnician} />
-          <ControlledSelectField label="Tissue Type" options={["All tissue types", "ADI", "BM", "NB - Cord Blood", "NB - Cord Tissue"]} value={tissue} onChange={setTissue} />
-          <ControlledSelectField label="Passage" options={["All passages", "P0", "P1", "P2"]} value={passage} onChange={setPassage} />
-          <ControlledSelectField label="Process / Status" options={["All statuses", "Received", "In Expansion", "Frozen LN2", "In Q2", "Freezing", "Isolation", "Passaging", "Replate"]} value={status} onChange={setStatus} />
-          <ControlledSelectField label="Date / Time Span" options={["Today", "Last 24 hours", "This week"]} value={timeRange} onChange={setTimeRange} />
-        </CardContent>
-      </Card>
-
-      <DataTable
-        title="Live Lab Log"
-        description="Current batch status, process ownership, stage timing, concerns, and next steps."
-        columns={["Client ID", "Cell Batch ID", "Tissue Type", "Passage", "Current Status", "Current Process", "Technician", "Days in Current Stage", "Expected Timeframe", "Flag / Concern", "Next Step", "Last Updated"]}
-        rows={filteredRows.map((r) => [r.client, r.batch, r.tissue, r.passage, <LiveStatusBadge value={r.status} />, r.process, r.technician, `${r.daysInStage} day${r.daysInStage === 1 ? "" : "s"}`, r.expected, r.flag, r.nextStep, r.updated])}
-      />
-    </div>
-  );
-}
-
-function QAReportsDashboard() {
-  const [search, setSearch] = useState("");
-
-  const filteredRows = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    return qaIssueRows.filter((row) => {
-      const matchesSearch =
-        !query ||
-        [row.issueId, row.client, row.batch, row.tissue, row.process, row.issueType, row.detail, row.qaStatus, row.assignedTo, row.technician]
-          .join(" ")
-          .toLowerCase()
-          .includes(query);
-
-      return matchesSearch;
-    });
-  }, [search]);
-
-  return (
-    <div className="space-y-5">
-      <div>
-        <p className="text-sm font-medium text-slate-500">QA Exception Review</p>
-        <h1 className="text-3xl font-bold tracking-tight">QA Reports</h1>
-        <p className="mt-2 max-w-4xl text-sm text-slate-600">
-          A focused queue of lab, intake, documentation, and shipment issues that fall out of spec and need QA attention.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <KpiCard title="Slow/No Growth" value={filteredRows.filter((r) => r.issueType === "Slow/No Growth").length} note="Growth exceptions for QA review" icon={TrendingDown} />
-        <KpiCard title="Quarantine" value={filteredRows.filter((r) => r.issueType === "Quarantine").length} note="Batches held for QA disposition" icon={AlertTriangle} />
-        <KpiCard title="Discard" value={filteredRows.filter((r) => r.issueType === "Discard").length} note="Discard decisions or impacts" icon={Trash2} />
-      </div>
-
-      <Card className="rounded-lg shadow-sm">
-        <CardContent className="p-4">
-          <label className="flex min-w-0 flex-col gap-1 text-sm md:max-w-md">
-            <span className="font-medium text-slate-600">Search</span>
-            <span className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-slate-500">
-              <Search size={16} />
-              <input
-                className="min-w-0 flex-1 bg-transparent text-slate-700 outline-none placeholder:text-slate-400"
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Issue, client, batch, detail"
-                type="search"
-                value={search}
-              />
-            </span>
-          </label>
-        </CardContent>
-      </Card>
-
-      <DataTable
-        title="QA Exception Queue"
-        description="Issues that are out of spec, awaiting review, or require QA disposition."
-        columns={["Cell Batch ID", "Tissue Type", "Current Process Form", "Issue Type"]}
-        rows={filteredRows.map((r) => [r.batch, r.tissue, r.process, <Badge tone={r.issueType === "Slow/No Growth" ? "yellow" : r.issueType === "Quarantine" ? "red" : "neutral"}>{r.issueType}</Badge>])}
-      />
-    </div>
-  );
-}
-
 function ReportsPage() {
-  const [search, setSearch] = useState("");
-  const [dateRange, setDateRange] = useState("Last 30 days");
-  const [technician, setTechnician] = useState("All technicians");
-  const [tissue, setTissue] = useState("All tissue types");
-  const [passage, setPassage] = useState("All passages");
+  const [activeReport, setActiveReport] = useState("Sample Intake Issues");
 
-  const filteredRows = useMemo(() => {
-    const query = search.trim().toLowerCase();
-
-    return reportResultRows.filter((row) => {
-      const matchesSearch =
-        !query ||
-        [
-          row.client,
-          row.batch,
-          row.tissueTypes.join(" "),
-          row.passages.join(" "),
-          row.technician,
-          row.averageVialsFrozen,
-          row.averageConfluency,
-          row.averageViability,
-          row.averageCellCounts,
-        ]
-          .join(" ")
-          .toLowerCase()
-          .includes(query);
-
-      return (
-        matchesSearch &&
-        (technician === "All technicians" || row.technician === technician) &&
-        (tissue === "All tissue types" || row.tissueTypes.includes(tissue)) &&
-        (passage === "All passages" || row.passages.includes(passage))
-      );
-    });
-  }, [passage, search, technician, tissue]);
-
-  const overall = useMemo(() => {
-    const rowCount = filteredRows.length || 1;
-    const totalSamplesFrozen = filteredRows.reduce((sum, row) => sum + row.totalSamplesFrozen, 0);
-    const totalBatches = filteredRows.reduce((sum, row) => sum + row.batchesIncluded, 0);
-    const totalTechnicians = new Set(filteredRows.map((row) => row.technician)).size;
-    const totalTissueTypes = new Set(filteredRows.flatMap((row) => row.tissueTypes)).size;
-    const avgVialsFrozen = filteredRows.reduce((sum, row) => sum + row.averageVialsFrozen, 0) / rowCount;
-    const avgStdDev = filteredRows.reduce((sum, row) => sum + row.frozenVialsStdDev, 0) / rowCount;
-    const avgConfluency = filteredRows.reduce((sum, row) => sum + parseMetricNumber(row.averageConfluency), 0) / rowCount;
-    const avgViability = filteredRows.reduce((sum, row) => sum + parseMetricNumber(row.averageViability), 0) / rowCount;
-    const avgCellCounts = filteredRows.reduce((sum, row) => sum + parseMetricNumber(row.averageCellCounts), 0) / rowCount;
-    const avgDaysReceivingToFreezing = filteredRows.reduce((sum, row) => sum + row.averageDaysReceivingToFreezing, 0) / rowCount;
-
-    return {
-      avgVialsFrozen: formatOneDecimal(avgVialsFrozen),
-      avgStdDev: formatOneDecimal(avgStdDev),
-      avgConfluency: `${formatOneDecimal(avgConfluency)}%`,
-      avgViability: `${formatOneDecimal(avgViability)}%`,
-      avgCellCounts: `${formatOneDecimal(avgCellCounts)}M`,
-      totalSamplesFrozen,
-      totalTechnicians,
-      totalBatches,
-      totalTissueTypes,
-      avgDaysReceivingToFreezing: formatOneDecimal(avgDaysReceivingToFreezing),
-    };
-  }, [filteredRows]);
-
-  const reportColumns = [
-    "Technician",
-    "Average Vials Frozen",
-    "Std Dev of Frozen Vials",
-    "Average Confluency",
-    "Average Viability",
-    "Average Cell Counts",
-    "Total Samples Frozen",
-    "Average Days from Receiving Sample to Freezing Vials",
-    "Batches / Runs Included",
-  ];
-
-  const reportRows = filteredRows.map((row) => [
-    row.technician,
-    row.averageVialsFrozen,
-    row.frozenVialsStdDev,
-    row.averageConfluency,
-    row.averageViability,
-    row.averageCellCounts,
-    row.totalSamplesFrozen,
-    row.averageDaysReceivingToFreezing,
-    row.batchesIncluded,
-  ]);
-
-  const exportReport = () => {
-    downloadCsv("lab-freezing-performance-report.csv", [reportColumns, ...reportRows]);
-  };
+  const view = useMemo(() => {
+    if (activeReport === "Client Lineage / Batch History") return <ClientLineageReport />;
+    if (activeReport === "Lab Cleanroom") return <LabCleanroomReport />;
+    return <SampleIntakeIssuesReport />;
+  }, [activeReport]);
 
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-500">Report Pulling</p>
+          <p className="text-sm font-medium text-slate-500">Reporting</p>
           <h1 className="text-3xl font-bold tracking-tight">Reports</h1>
           <p className="mt-2 max-w-4xl text-sm text-slate-600">
-            Pull and export a focused lab performance report filtered by technician, tissue type, passage, date range, client, or batch.
+            Profile-style and operational reports using the same client, batch, intake, cleanroom, and quality event data.
           </p>
         </div>
-        <Button className="gap-2 rounded-lg" onClick={exportReport}>
-          <ArrowUpRight size={16} /> Export CSV
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" className="gap-2 rounded-lg"><Filter size={16} /> Filters</Button>
+          <Button className="gap-2 rounded-lg"><FileText size={16} /> Export Report</Button>
+        </div>
       </div>
-
-      <Card className="rounded-lg shadow-sm">
-        <CardContent className="grid gap-4 p-4 md:grid-cols-2 xl:grid-cols-6">
-          <label className="flex min-w-0 flex-col gap-1 text-sm md:col-span-2 xl:col-span-1">
-            <span className="font-medium text-slate-600">Search</span>
-            <span className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-slate-500">
-              <Search size={16} />
-              <input
-                className="min-w-0 flex-1 bg-transparent text-slate-700 outline-none placeholder:text-slate-400"
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Client, batch, process"
-                type="search"
-                value={search}
-              />
-            </span>
-          </label>
-          <ControlledSelectField label="Date Range" options={["Last 7 days", "Last 30 days", "This month", "Last quarter"]} value={dateRange} onChange={setDateRange} />
-          <ControlledSelectField label="Technician" options={["All technicians", "Technician A", "Technician B", "Technician C", "Technician D"]} value={technician} onChange={setTechnician} />
-          <ControlledSelectField label="Tissue Type" options={["All tissue types", "ADI", "BM", "NB - Cord Blood", "NB - Cord Tissue"]} value={tissue} onChange={setTissue} />
-          <ControlledSelectField label="Passage" options={["All passages", "P0", "P1", "P2"]} value={passage} onChange={setPassage} />
-          <div className="flex items-end">
-            <Button className="h-10 w-full rounded-lg">Generate Report</Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-lg shadow-sm">
-        <CardContent className="p-5">
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold">Overall Lab Performance</h2>
-            <p className="text-sm text-slate-500">Lab-wide averages and totals for the current filter set.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
-            {[
-              ["Avg Vials Frozen", overall.avgVialsFrozen],
-              ["Std Dev Frozen Vials", overall.avgStdDev],
-              ["Avg Confluency", overall.avgConfluency],
-              ["Avg Viability", overall.avgViability],
-              ["Avg Cell Counts", overall.avgCellCounts],
-              ["Samples Frozen", overall.totalSamplesFrozen],
-              ["Avg Days to Freeze", overall.avgDaysReceivingToFreezing],
-              ["Technicians", overall.totalTechnicians],
-              ["Batches / Runs", overall.totalBatches],
-            ].map(([label, value]) => (
-              <div key={label} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                <p className="text-xs font-medium text-slate-500">{label}</p>
-                <p className="mt-2 text-xl font-bold text-slate-900">{value}</p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <DataTable
-        title="Technician Performance Breakdown"
-        description="One row per technician showing performance against the current lab performance filters."
-        columns={reportColumns}
-        rows={reportRows}
-      />
-    </div>
-  );
-}
-
-function PlaceholderPage({ title }) {
-  return (
-    <div className="space-y-5">
-      <div>
-        <p className="text-sm font-medium text-slate-500">LIMS Mockup</p>
-        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-      </div>
+      <ReportTabs active={activeReport} setActive={setActiveReport} />
+      {view}
     </div>
   );
 }
@@ -2737,12 +2032,12 @@ function DataTable({ columns, rows, title = "Detailed Work Queue", description =
 }
 
 export default function LimsBatchDashboardMockups() {
-  const [activeTopLevel, setActiveTopLevel] = useState("Live Look");
+  const [activeTopLevel, setActiveTopLevel] = useState("Batch Operational Dashboards");
 
   const view = useMemo(() => {
-    if (activeTopLevel === "Live Look") return <LiveLookDashboard />;
+    if (activeTopLevel === "Lab Operational Dashboard") return <LabOperationalDashboardPage />;
     if (activeTopLevel === "Reports") return <ReportsPage />;
-    return <QAReportsDashboard />;
+    return <BatchOperationalDashboardsPage />;
   }, [activeTopLevel]);
 
   return (
