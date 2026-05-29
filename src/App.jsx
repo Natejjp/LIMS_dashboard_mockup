@@ -29,7 +29,6 @@ import {
 } from "lucide-react";
 
 const dashboards = [
-  "Shipping",
   "Initials",
   "Slow/No Growth",
   "Quarantine",
@@ -45,7 +44,6 @@ const reportTabs = [
 const labTabs = [
   "Lab Manufacturing / Schedule",
   "Incubator",
-  "Lab Equipment and Reagent",
 ];
 
 function Card({ children, className = "", ...props }) {
@@ -1311,7 +1309,7 @@ function QuarantineDashboard() {
         <Card className="rounded-lg shadow-sm lg:col-span-2"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Quarantine by Reason</h2><SimpleBarVisual label="Sterility / contamination review" value={2} max={3} /><SimpleBarVisual label="QA hold / form correction" value={1} max={3} /><SimpleBarVisual label="Intake discrepancy" value={1} max={3} /><SimpleBarVisual label="Low dose count review" value={1} max={3} /></CardContent></Card>
         <Card className="rounded-lg shadow-sm"><CardContent className="p-5"><h2 className="text-lg font-semibold">Release Timing</h2><div className="mt-4 space-y-3 text-sm"><div className="flex justify-between rounded-lg bg-slate-100 p-3"><span>Needed today</span><strong>1</strong></div><div className="flex justify-between rounded-lg bg-slate-100 p-3"><span>Needed in 1–2 days</span><strong>2</strong></div><div className="flex justify-between rounded-lg bg-slate-100 p-3"><span>No shipment impact</span><strong>1</strong></div></div></CardContent></Card>
       </div>
-      <DataTable columns={["Cell Batch ID", "Client ID", "Sample Type", "Date Placed", "Reason", "Expected Release", "Initial/Replate", "Flask/Vials", "Slow Growth", "Shipment", "Days Needed"]} rows={filteredRows.map(r => [r.batch, r.client, r.sample, r.placed, r.reason, r.release, <Badge tone="blue">{r.stage}</Badge>, <Badge tone="purple">{r.inventory}</Badge>, <FlagBadge value={r.growth === "No" ? "No" : "Yes"} />, <FlagBadge value={r.shipment} />, r.daysNeeded === null ? "N/A" : r.daysNeeded === 0 ? "Today" : `${r.daysNeeded} day${r.daysNeeded > 1 ? "s" : ""}`])} />
+      <DataTable columns={["Cell Batch ID", "Client ID", "Sample Type", "Date Placed", "Reason", "Expected Release", "Initial/Replate", "Flask/Vials", "Slow Growth", "Days Needed"]} rows={filteredRows.map(r => [r.batch, r.client, r.sample, r.placed, r.reason, r.release, <Badge tone="blue">{r.stage}</Badge>, <Badge tone="purple">{r.inventory}</Badge>, <FlagBadge value={r.growth === "No" ? "No" : "Yes"} />, r.daysNeeded === null ? "N/A" : r.daysNeeded === 0 ? "Today" : `${r.daysNeeded} day${r.daysNeeded > 1 ? "s" : ""}`])} />
     </DashboardShell>
   );
 }
@@ -1417,7 +1415,7 @@ function InitialsDashboard() {
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Initials by Sample Type</h2><SimpleBarVisual label="ADI" value={1} max={3} /><SimpleBarVisual label="BM" value={1} max={3} /><SimpleBarVisual label="Cord Blood" value={1} max={3} /><SimpleBarVisual label="Cord Tissue" value={1} max={3} /></CardContent></Card>
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Days Growing Buckets</h2><SimpleBarVisual label="0–7 days" value={0} max={4} /><SimpleBarVisual label="8–14 days" value={3} max={4} /><SimpleBarVisual label="15+ days" value={1} max={4} /></CardContent></Card>
       </div>
-      <DataTable columns={["Client ID", "Cell Batch ID", "Sample Type", "Days Growing", "Shipment", "Slow Growth", "Discard", "Intake Issues"]} rows={filteredRows.map(r => [r.client, r.batch, r.sample, `${r.days} days`, <FlagBadge value={r.shipment} />, r.growth === "No" ? <FlagBadge value="No" /> : <Badge tone="yellow">{r.growth}</Badge>, <FlagBadge value={r.discard} />, r.intake])} />
+      <DataTable columns={["Client ID", "Cell Batch ID", "Sample Type", "Days Growing", "Slow Growth", "Discard", "Intake Issues"]} rows={filteredRows.map(r => [r.client, r.batch, r.sample, `${r.days} days`, r.growth === "No" ? <FlagBadge value="No" /> : <Badge tone="yellow">{r.growth}</Badge>, <FlagBadge value={r.discard} />, r.intake])} />
     </DashboardShell>
   );
 }
@@ -1468,7 +1466,7 @@ function SlowGrowthDashboard() {
         searchValue={search}
         showTags={false}
       />
-      <DataTable columns={["Client ID", "Batch ID", "Initial or Replate", "Days Growing", "Shipment", "Initial", "Quarantine"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="blue">{r.stage}</Badge>, `${r.days} days`, <FlagBadge value={r.shipment} />, <FlagBadge value={r.initial} />, <FlagBadge value={r.quarantine} />])} />
+      <DataTable columns={["Client ID", "Batch ID", "Initial or Replate", "Days Growing", "Initial", "Quarantine"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="blue">{r.stage}</Badge>, `${r.days} days`, <FlagBadge value={r.initial} />, <FlagBadge value={r.quarantine} />])} />
     </DashboardShell>
   );
 }
@@ -1523,7 +1521,7 @@ function DiscardDashboard() {
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Discard Type</h2><SimpleBarVisual label="Flask" value={2} max={3} /><SimpleBarVisual label="Vials" value={2} max={3} /></CardContent></Card>
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Top Discard Reasons</h2><SimpleBarVisual label="No growth" value={1} max={2} /><SimpleBarVisual label="Low dose count" value={1} max={2} /><SimpleBarVisual label="Contamination concern" value={1} max={2} /><SimpleBarVisual label="Client-requested" value={1} max={2} /></CardContent></Card>
       </div>
-      <DataTable columns={["Client ID", "Cell Batch ID", "Discard Type", "Reason for Discard", "Shipment", "Initial", "Quarantine"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="purple">{r.type}</Badge>, r.reason, <FlagBadge value={r.shipment} />, <FlagBadge value={r.initial} />, <FlagBadge value={r.quarantine} />])} />
+      <DataTable columns={["Client ID", "Cell Batch ID", "Discard Type", "Reason for Discard", "Initial", "Quarantine"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="purple">{r.type}</Badge>, r.reason, <FlagBadge value={r.initial} />, <FlagBadge value={r.quarantine} />])} />
     </DashboardShell>
   );
 }
@@ -1742,11 +1740,10 @@ function ReportsPage() {
 }
 
 function BatchOperationalDashboardsPage() {
-  const [active, setActive] = useState("Shipping");
+  const [active, setActive] = useState("Initials");
 
   const view = useMemo(() => {
     if (active === "Quarantine") return <QuarantineDashboard />;
-    if (active === "Shipping") return <ShippingDashboard />;
     if (active === "Initials") return <InitialsDashboard />;
     if (active === "Slow/No Growth") return <SlowGrowthDashboard />;
     return <DiscardDashboard />;
@@ -1908,32 +1905,28 @@ function LabManufacturingScheduleDashboard() {
 }
 
 function IncubatorDashboard() {
-  const occupiedSpaces = incubatorSpaces.filter((space) => space.status !== "Available");
-  const averageDays = (occupiedSpaces.reduce((sum, space) => sum + space.days, 0) / occupiedSpaces.length).toFixed(1);
+  const capacityRows = [
+    ["Incubator 1", "Rack 1", 4, 2],
+    ["Incubator 1", "Rack 2", 1, 5],
+    ["Incubator 1", "Rack 3", 6, 0],
+    ["Incubator 1", "Rack 4", 3, 3],
+    ["Incubator 1", "Rack 5", 5, 1],
+    ["Incubator 1", "Rack 6", 2, 4],
+    ["Incubator 2", "Rack 1", 6, 0],
+    ["Incubator 2", "Rack 2", 2, 4],
+    ["Incubator 2", "Rack 3", 3, 3],
+    ["Incubator 2", "Rack 4", 5, 1],
+    ["Incubator 2", "Rack 5", 4, 2],
+    ["Incubator 2", "Rack 6", 1, 5],
+  ];
 
   return (
     <DashboardShell>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <KpiCard title="Total Spaces" value={incubatorSpaces.length} note="2 incubators, 6 racks each" icon={Warehouse} />
-        <KpiCard title="Available Spaces" value={incubatorSpaces.filter(r => r.status === "Available").length} note="Open rack positions" icon={CheckCircle2} />
-        <KpiCard title="Occupied Spaces" value={incubatorSpaces.filter(r => r.status === "Occupied").length} note="Active rack occupancy" icon={Boxes} />
-        <KpiCard title="Near Capacity" value={incubatorSpaces.filter(r => r.status === "Near Capacity").length} note="Needs capacity planning" icon={AlertTriangle} />
-        <KpiCard title="Avg Days Incubator" value={averageDays} note="Occupied spaces only" icon={TimerReset} />
-      </div>
-      <FilterStrip filters={["Incubator", "Rack", "Status", "Sample Type", "Client ID / Batch ID", "Technician"]} showTags={false} />
-      <CollapsibleSection title="Visual Summaries">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <VisualCard title="Utilization by Incubator"><SimpleBarVisual label="Incubator 1" value={4} max={6} /><SimpleBarVisual label="Incubator 2" value={3} max={6} /></VisualCard>
-          <VisualCard title="Available vs Occupied"><SimpleBarVisual label="Available" value={5} max={12} /><SimpleBarVisual label="Occupied" value={5} max={12} /><SimpleBarVisual label="Near Capacity" value={2} max={12} /></VisualCard>
-          <VisualCard title="Avg Days by Sample"><SimpleBarVisual label="ADI" value={6} max={15} /><SimpleBarVisual label="BM" value={9} max={15} /><SimpleBarVisual label="Cord Blood" value={12} max={15} /><SimpleBarVisual label="Cord Tissue" value={11} max={15} /></VisualCard>
-        </div>
-      </CollapsibleSection>
-      <IncubatorGrid />
       <DataTable
-        title="Incubator Space History"
-        description="Previous rack assignments and how long batches occupied each incubator space."
-        columns={["Incubator", "Rack", "Previous Cell Batch ID", "Sample Type", "Date In", "Date Out", "Days in Space", "Technician"]}
-        rows={incubatorHistoryRows}
+        title="Incubator Capacity"
+        description="Available and occupied space by incubator rack."
+        columns={["Incubator", "Rack", "Total Spaces Available", "Total Spaces Occupied"]}
+        rows={capacityRows}
       />
     </DashboardShell>
   );
@@ -1977,7 +1970,6 @@ function LabOperationalDashboardPage() {
 
   const view = useMemo(() => {
     if (activeLab === "Incubator") return <IncubatorDashboard />;
-    if (activeLab === "Lab Equipment and Reagent") return <LabEquipmentReagentDashboard />;
     return <LabManufacturingScheduleDashboard />;
   }, [activeLab]);
 
@@ -1988,7 +1980,7 @@ function LabOperationalDashboardPage() {
           <p className="text-sm font-medium text-slate-500">Lab Operations Command Center</p>
           <h1 className="text-3xl font-bold tracking-tight">Lab Operational Dashboard</h1>
           <p className="mt-2 max-w-4xl text-sm text-slate-600">
-            Scheduling, incubator capacity, and equipment/reagent usage views for active lab manufacturing operations.
+            Scheduling and incubator capacity views for active lab manufacturing operations.
           </p>
         </div>
         <div className="flex gap-2">
