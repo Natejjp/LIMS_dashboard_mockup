@@ -1988,7 +1988,7 @@ function LabManufacturingScheduleDashboard() {
   return (
     <DashboardShell>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
-        <KpiCard title="Scheduled Tasks" value={labScheduleRows.length} note="Show all manufacturing tasks" icon={ClipboardList} active={quickFilter === "All"} onClick={() => setQuickFilter("All")} />
+        <KpiCard title="Total Tasks" value={labScheduleRows.length} note="Show all manufacturing tasks" icon={ClipboardList} active={quickFilter === "All"} onClick={() => setQuickFilter("All")} />
         <KpiCard title="Available Tasks" value={labScheduleRows.filter(r => r.status === "Available").length} note="Ready list sections" icon={CheckCircle2} active={quickFilter === "Available Tasks"} onClick={() => toggleQuickFilter("Available Tasks")} />
         <KpiCard title="In Process" value={labScheduleRows.filter(r => r.status === "In Process").length} note="Open process forms" icon={TimerReset} active={quickFilter === "In Process"} onClick={() => toggleQuickFilter("In Process")} />
         <KpiCard title="Completed" value={labScheduleRows.filter(r => r.status === "Completed").length} note="Taken off list" icon={PackageCheck} active={quickFilter === "Completed"} onClick={() => toggleQuickFilter("Completed")} />
