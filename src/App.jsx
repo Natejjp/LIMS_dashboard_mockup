@@ -2016,9 +2016,9 @@ function LabManufacturingScheduleDashboard() {
       <TimelineSchedule rows={filteredRows} />
       <DataTable
         title="Manufacturing Schedule"
-        description="Upcoming and active lab manufacturing tasks by process, technician, status, and LIMS section."
-        columns={["Process", "Status", "Process Start Time", "Process End Time", "Technician", "Client ID", "Cell Batch ID", "Sample Type", "Current LIMS Section", "Notes"]}
-        rows={filteredRows.map(r => [r.process, <OperationalStatusBadge value={r.status} />, r.processStartTime, r.processEndTime, r.technician, r.client, r.batch, r.sample, r.section, r.notes])}
+        description="Upcoming and active lab manufacturing tasks by process, technician, status, and sample type."
+        columns={["Process", "Status", "Process Start Time", "Process End Time", "Technician", "Client ID", "Cell Batch ID", "Sample Type"]}
+        rows={filteredRows.map(r => [r.process, <OperationalStatusBadge value={r.status} />, r.processStartTime, r.processEndTime, r.technician, r.client, r.batch, r.sample])}
       />
     </DashboardShell>
   );
@@ -2181,7 +2181,7 @@ function IncubatorDashboard() {
         <DataTable
           title="Incubator"
           description="Active incubator batches, feeding status, confluency, and flask details."
-          columns={["Incubator", "Rack Space", "Client ID", "Batch ID", "Passage #", "Seeding Date", "Tissue Type", "Replate/Initial", "Last Confluency", "Days Incubator", "Last Feeding Date", "Last Feeding Type (Complete/ Partial)", "Flask Size"]}
+          columns={["Incubator", "Rack Space", "Client ID", "Batch ID", "Passage #", "Seeding Date", "Tissue Type", "Replate/Initial", "Last Confluency", "Days Incubator", "Last Feeding Date", "Last Feeding Type", "Flask Size"]}
           rows={incubatorRows.map(r => [r.incubator, r.rackSpace, r.client, r.batch, r.passage, r.seedingDate, r.tissue, r.stage, r.confluency, r.days, r.feedingDate, r.feedingType, r.flask])}
         />
       )}
