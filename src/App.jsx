@@ -80,13 +80,13 @@ const quarantineRows = [
     client: "H4012",
     sample: "ADI",
     placed: "05/18/2026",
-    reason: "Pending sterility review",
-    release: "05/29/2026",
+    reason: "Retest Sterility",
+    release: "06/01/2026",
     stage: "Initial",
     inventory: "Vials",
     growth: "No",
     shipment: "Yes",
-    daysNeeded: 2,
+    daysNeeded: 4,
     risk: "High",
   },
   {
@@ -94,13 +94,13 @@ const quarantineRows = [
     client: "H3988",
     sample: "NB - Cord Blood",
     placed: "05/20/2026",
-    reason: "Intake discrepancy",
-    release: "TBD",
+    reason: "Retest Sterility",
+    release: "06/03/2026",
     stage: "Initial",
     inventory: "Flask",
     growth: "Slow Growth",
     shipment: "No",
-    daysNeeded: null,
+    daysNeeded: 6,
     risk: "Medium",
   },
   {
@@ -108,13 +108,13 @@ const quarantineRows = [
     client: "H4205",
     sample: "BM",
     placed: "05/21/2026",
-    reason: "QA hold - form correction",
-    release: "05/28/2026",
+    reason: "Retest Sterility",
+    release: "06/04/2026",
     stage: "Replate",
     inventory: "Flask",
     growth: "Slow Growth",
     shipment: "Yes",
-    daysNeeded: 5,
+    daysNeeded: 7,
     risk: "Medium",
   },
   {
@@ -122,13 +122,13 @@ const quarantineRows = [
     client: "H4077",
     sample: "ADI",
     placed: "05/22/2026",
-    reason: "Low dose count review",
-    release: "05/30/2026",
+    reason: "Retest Sterility",
+    release: "06/05/2026",
     stage: "Initial",
     inventory: "Vials",
     growth: "No",
     shipment: "Yes",
-    daysNeeded: 1,
+    daysNeeded: 8,
     risk: "High",
   },
   {
@@ -136,13 +136,13 @@ const quarantineRows = [
     client: "H4099",
     sample: "ADI",
     placed: "05/17/2026",
-    reason: "Possible contamination review",
-    release: "TBD",
+    reason: "Retest Sterility",
+    release: "05/31/2026",
     stage: "Replate",
     inventory: "Vials",
     growth: "No",
     shipment: "Yes",
-    daysNeeded: 0,
+    daysNeeded: 3,
     risk: "Critical",
   },
 ];
@@ -218,6 +218,7 @@ const initialRows = [
     days: 17,
     shipment: "No",
     growth: "Slow Growth",
+    passaged: "No",
     discard: "No",
     intake: "Temperature missing",
   },
@@ -228,6 +229,7 @@ const initialRows = [
     days: 9,
     shipment: "Yes",
     growth: "No Growth",
+    passaged: "No",
     discard: "No",
     intake: "Shipping box damaged",
   },
@@ -238,6 +240,7 @@ const initialRows = [
     days: 8,
     shipment: "No",
     growth: "No",
+    passaged: "Yes",
     discard: "No",
     intake: "None",
   },
@@ -248,6 +251,7 @@ const initialRows = [
     days: 12,
     shipment: "Yes",
     growth: "Slow Growth",
+    passaged: "No",
     discard: "Yes",
     intake: "Low starting cell count",
   },
@@ -258,6 +262,7 @@ const slowGrowthRows = [
     client: "H3988",
     batch: "H3988-CB01-P0-P20260503-01",
     stage: "Initial",
+    flaskSize: "1-stack",
     days: 17,
     shipment: "No",
     initial: "Yes",
@@ -268,6 +273,7 @@ const slowGrowthRows = [
     client: "H4205",
     batch: "H4205-BM01-P1-P20260514-01",
     stage: "Replate",
+    flaskSize: "5-stack",
     days: 13,
     shipment: "Yes",
     initial: "No",
@@ -278,6 +284,7 @@ const slowGrowthRows = [
     client: "H4150",
     batch: "H4150-CT01-P0-P20260511-01",
     stage: "Initial",
+    flaskSize: "2-stack",
     days: 9,
     shipment: "Yes",
     initial: "Yes",
@@ -288,6 +295,7 @@ const slowGrowthRows = [
     client: "H4211",
     batch: "H4211-BM01-P0-P20260509-01",
     stage: "Initial",
+    flaskSize: "2-stack",
     days: 12,
     shipment: "Yes",
     initial: "Yes",
@@ -302,6 +310,7 @@ const discardRows = [
     batch: "H4211-BM01-P0-P20260509-01",
     type: "Flask",
     reason: "No growth after review period",
+    vialsDiscard: "-",
     shipment: "Yes",
     initial: "Yes",
     quarantine: "No",
@@ -311,6 +320,7 @@ const discardRows = [
     batch: "H4077-A01-P0-P20260510-02",
     type: "Vials",
     reason: "Low dose count",
+    vialsDiscard: 4,
     shipment: "Yes",
     initial: "No",
     quarantine: "Yes",
@@ -320,6 +330,7 @@ const discardRows = [
     batch: "H3902-A01-P2-P20260428-01",
     type: "Flask",
     reason: "Contamination concern",
+    vialsDiscard: "-",
     shipment: "No",
     initial: "No",
     quarantine: "Yes",
@@ -329,6 +340,7 @@ const discardRows = [
     batch: "H3888-CT01-P0-P20260501-01",
     type: "Vials",
     reason: "Client-requested discard",
+    vialsDiscard: 6,
     shipment: "No",
     initial: "Yes",
     quarantine: "No",
@@ -1321,7 +1333,6 @@ function DashboardShell({ children }) {
 
 function QuarantineDashboard() {
   const [search, setSearch] = useState("");
-  const [quickFilter, setQuickFilter] = useState("All");
 
   const filteredRows = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -1334,36 +1345,20 @@ function QuarantineDashboard() {
           .toLowerCase()
           .includes(query);
 
-      const matchesQuickFilter =
-        quickFilter === "All" ||
-        (quickFilter === "Slow Growth Flag" && row.growth !== "No");
-
-      return matchesSearch && matchesQuickFilter;
+      return matchesSearch;
     });
-  }, [quickFilter, search]);
-
-  const toggleQuickFilter = (filterName) => {
-    setQuickFilter((current) => (current === filterName ? "All" : filterName));
-  };
+  }, [search]);
 
   return (
     <DashboardShell>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <KpiCard title="In Quarantine" value={quarantineRows.length} note="Show all quarantined batches" icon={AlertTriangle} active={quickFilter === "All"} onClick={() => setQuickFilter("All")} />
-        <KpiCard title="Slow Growth Flag" value={quarantineRows.filter((r) => r.growth !== "No").length} note="Also in growth dashboard" icon={TrendingDown} active={quickFilter === "Slow Growth Flag"} onClick={() => toggleQuickFilter("Slow Growth Flag")} />
-      </div>
       <FilterStrip
-        filters={[`Showing ${filteredRows.length} of ${quarantineRows.length}`, quickFilter === "All" ? "All Quarantine" : quickFilter, "Sample Type", "Reason", "Initial/Replate", "Flask/Vials", "Release Date"]}
+        filters={[`Showing ${filteredRows.length} of ${quarantineRows.length}`, "All Quarantine", "Sample Type", "Reason", "Initial/Replate", "Flask/Vials", "Release Date"]}
         onSearchChange={setSearch}
         placeholder="Search client, batch, reason, or release"
         searchValue={search}
         showTags={false}
       />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="rounded-lg shadow-sm lg:col-span-2"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Quarantine by Reason</h2><SimpleBarVisual label="Sterility / contamination review" value={2} max={3} /><SimpleBarVisual label="QA hold / form correction" value={1} max={3} /><SimpleBarVisual label="Intake discrepancy" value={1} max={3} /><SimpleBarVisual label="Low dose count review" value={1} max={3} /></CardContent></Card>
-        <Card className="rounded-lg shadow-sm"><CardContent className="p-5"><h2 className="text-lg font-semibold">Release Timing</h2><div className="mt-4 space-y-3 text-sm"><div className="flex justify-between rounded-lg bg-slate-100 p-3"><span>Needed today</span><strong>1</strong></div><div className="flex justify-between rounded-lg bg-slate-100 p-3"><span>Needed in 1–2 days</span><strong>2</strong></div><div className="flex justify-between rounded-lg bg-slate-100 p-3"><span>No shipment impact</span><strong>1</strong></div></div></CardContent></Card>
-      </div>
-      <DataTable columns={["Cell Batch ID", "Client ID", "Sample Type", "Date Placed", "Reason", "Expected Release", "Initial/Replate", "Flask/Vials", "Slow Growth", "Days Needed"]} rows={filteredRows.map(r => [r.batch, r.client, r.sample, r.placed, r.reason, r.release, <Badge tone="blue">{r.stage}</Badge>, <Badge tone="purple">{r.inventory}</Badge>, <FlagBadge value={r.growth === "No" ? "No" : "Yes"} />, r.daysNeeded === null ? "N/A" : r.daysNeeded === 0 ? "Today" : `${r.daysNeeded} day${r.daysNeeded > 1 ? "s" : ""}`])} />
+      <DataTable title="Quarantine" columns={["Cell Batch ID", "Client ID", "Sample Type", "Date Placed", "Reason", "Expected Release", "Initial/Replate", "Flask/Vials"]} rows={filteredRows.map(r => [r.batch, r.client, r.sample, r.placed, r.reason, r.release, <Badge tone="blue">{r.stage}</Badge>, <Badge tone="purple">{r.inventory}</Badge>])} />
     </DashboardShell>
   );
 }
@@ -1422,11 +1417,14 @@ function ShippingDashboard() {
 function InitialsDashboard() {
   const [search, setSearch] = useState("");
   const [quickFilter, setQuickFilter] = useState("All");
+  const [tissueType, setTissueType] = useState("All tissue types");
+  const tissueTypeOptions = ["All tissue types", ...Array.from(new Set(initialRows.map((row) => row.sample)))];
 
   const filteredRows = useMemo(() => {
     const query = search.trim().toLowerCase();
 
     return initialRows.filter((row) => {
+      const matchesTissueType = tissueType === "All tissue types" || row.sample === tissueType;
       const matchesSearch =
         !query ||
         [row.client, row.batch, row.sample, row.growth, row.intake]
@@ -1440,9 +1438,9 @@ function InitialsDashboard() {
         (quickFilter === "Intake Issues" && row.intake !== "None") ||
         (quickFilter === "Discard Flag" && row.discard === "Yes");
 
-      return matchesSearch && matchesQuickFilter;
+      return matchesSearch && matchesTissueType && matchesQuickFilter;
     });
-  }, [quickFilter, search]);
+  }, [quickFilter, search, tissueType]);
 
   const toggleQuickFilter = (filterName) => {
     setQuickFilter((current) => (current === filterName ? "All" : filterName));
@@ -1461,13 +1459,14 @@ function InitialsDashboard() {
         onSearchChange={setSearch}
         placeholder="Search client, batch, sample, or issue"
         searchValue={search}
+        controls={<ControlledSelectField label="Tissue Type" onChange={setTissueType} options={tissueTypeOptions} value={tissueType} />}
         showTags={false}
       />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Initials by Sample Type</h2><SimpleBarVisual label="ADI" value={1} max={3} /><SimpleBarVisual label="BM" value={1} max={3} /><SimpleBarVisual label="Cord Blood" value={1} max={3} /><SimpleBarVisual label="Cord Tissue" value={1} max={3} /></CardContent></Card>
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Days Growing Buckets</h2><SimpleBarVisual label="0–7 days" value={0} max={4} /><SimpleBarVisual label="8–14 days" value={3} max={4} /><SimpleBarVisual label="15+ days" value={1} max={4} /></CardContent></Card>
       </div>
-      <DataTable columns={["Client ID", "Cell Batch ID", "Sample Type", "Days Growing", "Slow Growth", "Discard", "Intake Issues"]} rows={filteredRows.map(r => [r.client, r.batch, r.sample, `${r.days} days`, r.growth === "No" ? <FlagBadge value="No" /> : <Badge tone="yellow">{r.growth}</Badge>, <FlagBadge value={r.discard} />, r.intake])} />
+      <DataTable title="Initials" columns={["Client ID", "Cell Batch ID", "Sample Type", "Days Growing", "Passaged", "Slow Growth", "Discard", "Intake Issues"]} rows={filteredRows.map(r => [r.client, r.batch, r.sample, `${r.days} days`, <FlagBadge value={r.passaged} />, <FlagBadge value={r.growth === "No" ? "No" : "Yes"} />, <FlagBadge value={r.discard} />, r.intake])} />
     </DashboardShell>
   );
 }
@@ -1475,14 +1474,17 @@ function InitialsDashboard() {
 function SlowGrowthDashboard() {
   const [search, setSearch] = useState("");
   const [quickFilter, setQuickFilter] = useState("All");
+  const [flaskSize, setFlaskSize] = useState("All flask sizes");
+  const flaskSizeOptions = ["All flask sizes", ...Array.from(new Set(slowGrowthRows.map((row) => row.flaskSize)))];
 
   const filteredRows = useMemo(() => {
     const query = search.trim().toLowerCase();
 
     return slowGrowthRows.filter((row) => {
+      const matchesFlaskSize = flaskSize === "All flask sizes" || row.flaskSize === flaskSize;
       const matchesSearch =
         !query ||
-        [row.client, row.batch, row.stage]
+        [row.client, row.batch, row.stage, row.flaskSize]
           .join(" ")
           .toLowerCase()
           .includes(query);
@@ -1493,9 +1495,9 @@ function SlowGrowthDashboard() {
         (quickFilter === "Replates" && row.stage === "Replate") ||
         (quickFilter === "Quarantine Flag" && row.quarantine === "Yes");
 
-      return matchesSearch && matchesQuickFilter;
+      return matchesSearch && matchesFlaskSize && matchesQuickFilter;
     });
-  }, [quickFilter, search]);
+  }, [flaskSize, quickFilter, search]);
 
   const toggleQuickFilter = (filterName) => {
     setQuickFilter((current) => (current === filterName ? "All" : filterName));
@@ -1514,9 +1516,10 @@ function SlowGrowthDashboard() {
         onSearchChange={setSearch}
         placeholder="Search client, batch, or stage"
         searchValue={search}
+        controls={<ControlledSelectField label="Flask Size" onChange={setFlaskSize} options={flaskSizeOptions} value={flaskSize} />}
         showTags={false}
       />
-      <DataTable columns={["Client ID", "Batch ID", "Initial or Replate", "Days Growing", "Quarantine", "Discard"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="blue">{r.stage}</Badge>, `${r.days} days`, <FlagBadge value={r.quarantine} />, <FlagBadge value={r.discard} />])} />
+      <DataTable title="Slow/No Growth" columns={["Client ID", "Batch ID", "Initial or Replate", "Flask Size", "Days Growing", "Quarantine", "Discard"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="blue">{r.stage}</Badge>, r.flaskSize, `${r.days} days`, <FlagBadge value={r.quarantine} />, <FlagBadge value={r.discard} />])} />
     </DashboardShell>
   );
 }
@@ -1569,7 +1572,7 @@ function DiscardDashboard() {
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Discard Type</h2><SimpleBarVisual label="Flask" value={2} max={3} /><SimpleBarVisual label="Vials" value={2} max={3} /></CardContent></Card>
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Top Discard Reasons</h2><SimpleBarVisual label="No growth" value={1} max={2} /><SimpleBarVisual label="Low dose count" value={1} max={2} /><SimpleBarVisual label="Contamination concern" value={1} max={2} /><SimpleBarVisual label="Client-requested" value={1} max={2} /></CardContent></Card>
       </div>
-      <DataTable columns={["Client ID", "Cell Batch ID", "Discard Type", "Reason for Discard", "Initial", "Quarantine"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="purple">{r.type}</Badge>, r.reason, <FlagBadge value={r.initial} />, <FlagBadge value={r.quarantine} />])} />
+      <DataTable title="Discard" columns={["Client ID", "Cell Batch ID", "Discard Type", "Vials Discard", "Reason for Discard", "Initial", "Quarantine"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="purple">{r.type}</Badge>, r.type === "Vials" ? r.vialsDiscard : "-", r.reason, <FlagBadge value={r.initial} />, <FlagBadge value={r.quarantine} />])} />
     </DashboardShell>
   );
 }
