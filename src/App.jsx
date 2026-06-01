@@ -24,7 +24,6 @@ import {
   Wrench,
   Warehouse,
   ClipboardList,
-  MapPinned,
   ChevronDown,
 } from "lucide-react";
 
@@ -416,16 +415,31 @@ const clientLineageRows = [
     batches: 5,
     availableBatches: 4,
     intakeIssues: "Temperature excursion",
-    avgYield: "18.4 vials",
     growHours: 74,
     doublingTime: "31.2 hrs",
     flaskMix: "1-stack: 2, 2-stack: 3",
+    processingRows: [
+      { flaskSize: "1-stack", avgYield: "15.8 vials", avgGrowHours: 68, stdDev: 2.1, totalBatches: 2 },
+      { flaskSize: "2-stack", avgYield: "20.1 vials", avgGrowHours: 78, stdDev: 2.8, totalBatches: 3 },
+    ],
     avgOrdered: 8,
     frequency: "Quarterly",
     masterBank: 42,
     workingBank: 28,
     passageDoses: "P0: 16, P1: 24, P2: 30",
+    batchRows: [
+      { batch: "H4012-A01-P0-P20260508-01", tissueType: "ADI", flaskSize: "1-stack", processingDate: "05/08/2026", freezingDate: "05/20/2026", slowGrowth: "No", quarantine: "No", discard: "No" },
+      { batch: "H4012-A01-P1-P20260512-01", tissueType: "ADI", flaskSize: "2-stack", processingDate: "05/12/2026", freezingDate: "05/24/2026", slowGrowth: "No", quarantine: "Yes", discard: "No" },
+      { batch: "H4012-BM01-P0-P20260509-01", tissueType: "BM", flaskSize: "2-stack", processingDate: "05/09/2026", freezingDate: "05/22/2026", slowGrowth: "Yes", quarantine: "No", discard: "No" },
+      { batch: "H4012-BM01-P1-P20260515-01", tissueType: "BM", flaskSize: "1-stack", processingDate: "05/15/2026", freezingDate: "-", slowGrowth: "No", quarantine: "No", discard: "No" },
+      { batch: "H4012-A01-P2-P20260518-01", tissueType: "ADI", flaskSize: "2-stack", processingDate: "05/18/2026", freezingDate: "-", slowGrowth: "No", quarantine: "No", discard: "Yes" },
+    ],
     qualityEvents: "Sterility review",
+    qualityRows: [
+      { batch: "H4012-A01-P1-P20260512-01", batchEvent: "Quarantine review opened", shippingEvent: "No shipping impact" },
+      { batch: "H4012-BM01-P0-P20260509-01", batchEvent: "Slow growth observation", shippingEvent: "Release date monitored" },
+      { batch: "H4012-A01-P2-P20260518-01", batchEvent: "Discard review", shippingEvent: "Replacement batch needed" },
+    ],
     shippingEvents: "1 delayed shipment",
   },
   {
@@ -435,16 +449,30 @@ const clientLineageRows = [
     batches: 4,
     availableBatches: 2,
     intakeIssues: "Low volume",
-    avgYield: "14.8 vials",
     growHours: 92,
     doublingTime: "39.5 hrs",
     flaskMix: "2-stack: 2, 5-stack: 2",
+    processingRows: [
+      { flaskSize: "2-stack", avgYield: "12.6 vials", avgGrowHours: 88, stdDev: 3.4, totalBatches: 2 },
+      { flaskSize: "5-stack", avgYield: "17.0 vials", avgGrowHours: 96, stdDev: 4.1, totalBatches: 2 },
+    ],
     avgOrdered: 12,
     frequency: "Monthly",
     masterBank: 24,
     workingBank: 18,
     passageDoses: "P0: 8, P1: 18, P2: 16",
+    batchRows: [
+      { batch: "H4205-BM01-P0-P20260430-01", tissueType: "BM", flaskSize: "2-stack", processingDate: "04/30/2026", freezingDate: "05/12/2026", slowGrowth: "No", quarantine: "No", discard: "No" },
+      { batch: "H4205-BM01-P1-P20260514-01", tissueType: "BM", flaskSize: "5-stack", processingDate: "05/14/2026", freezingDate: "05/28/2026", slowGrowth: "No", quarantine: "No", discard: "No" },
+      { batch: "H4205-BM01-P2-P20260516-01", tissueType: "BM", flaskSize: "5-stack", processingDate: "05/16/2026", freezingDate: "-", slowGrowth: "Yes", quarantine: "Yes", discard: "No" },
+      { batch: "H4205-BM01-P3-P20260518-01", tissueType: "BM", flaskSize: "2-stack", processingDate: "05/18/2026", freezingDate: "-", slowGrowth: "No", quarantine: "No", discard: "Yes" },
+    ],
     qualityEvents: "QA form correction",
+    qualityRows: [
+      { batch: "H4205-BM01-P1-P20260514-01", batchEvent: "QA form correction", shippingEvent: "No shipping impact" },
+      { batch: "H4205-BM01-P2-P20260516-01", batchEvent: "Quarantine review opened", shippingEvent: "Open order at risk" },
+      { batch: "H4205-BM01-P3-P20260518-01", batchEvent: "Discard review", shippingEvent: "Order quantity recalculation" },
+    ],
     shippingEvents: "2 open orders",
   },
   {
@@ -454,16 +482,29 @@ const clientLineageRows = [
     batches: 3,
     availableBatches: 1,
     intakeIssues: "Intake discrepancy",
-    avgYield: "10.6 vials",
     growHours: 118,
     doublingTime: "44.1 hrs",
     flaskMix: "1-stack: 1, 2-stack: 2",
+    processingRows: [
+      { flaskSize: "1-stack", avgYield: "8.4 vials", avgGrowHours: 112, stdDev: 1.9, totalBatches: 1 },
+      { flaskSize: "2-stack", avgYield: "11.7 vials", avgGrowHours: 121, stdDev: 2.6, totalBatches: 2 },
+    ],
     avgOrdered: 5,
     frequency: "As needed",
     masterBank: 14,
     workingBank: 9,
     passageDoses: "P0: 6, P1: 10, P2: 7",
+    batchRows: [
+      { batch: "H3988-CB01-P0-P20260503-01", tissueType: "NB - Cord Blood", flaskSize: "1-stack", processingDate: "05/03/2026", freezingDate: "-", slowGrowth: "Yes", quarantine: "No", discard: "No" },
+      { batch: "H3988-CT01-P0-P20260501-01", tissueType: "NB - Cord Tissue", flaskSize: "2-stack", processingDate: "05/01/2026", freezingDate: "05/14/2026", slowGrowth: "No", quarantine: "Yes", discard: "No" },
+      { batch: "H3988-CB01-P1-P20260510-01", tissueType: "NB - Cord Blood", flaskSize: "2-stack", processingDate: "05/10/2026", freezingDate: "-", slowGrowth: "No", quarantine: "No", discard: "Yes" },
+    ],
     qualityEvents: "Slow growth review",
+    qualityRows: [
+      { batch: "H3988-CB01-P0-P20260503-01", batchEvent: "Slow growth review", shippingEvent: "No active order" },
+      { batch: "H3988-CT01-P0-P20260501-01", batchEvent: "Quarantine review opened", shippingEvent: "Release date pending" },
+      { batch: "H3988-CB01-P1-P20260510-01", batchEvent: "Discard review", shippingEvent: "No active order" },
+    ],
     shippingEvents: "No active orders",
   },
 ];
@@ -542,7 +583,9 @@ const labScheduleRows = [
     time: "08:00 AM",
     process: "Freezing",
     status: "Available",
-    technician: "Technician A",
+    processStartTime: "-",
+    processEndTime: "-",
+    technician: "-",
     client: "H4012",
     batch: "H4012-A01-P0-P20260508-01",
     sample: "ADI",
@@ -554,6 +597,8 @@ const labScheduleRows = [
     time: "08:30 AM",
     process: "Isolation",
     status: "In Process",
+    processStartTime: "08:35 AM",
+    processEndTime: "-",
     technician: "Technician B",
     client: "H3988",
     batch: "H3988-CB01-P0-P20260503-01",
@@ -566,7 +611,9 @@ const labScheduleRows = [
     time: "09:15 AM",
     process: "Feeding",
     status: "Available",
-    technician: "Technician C",
+    processStartTime: "-",
+    processEndTime: "-",
+    technician: "-",
     client: "H4150",
     batch: "H4150-CT01-P0-P20260511-01",
     sample: "NB - Cord Tissue",
@@ -578,6 +625,8 @@ const labScheduleRows = [
     time: "10:00 AM",
     process: "Transfer",
     status: "Completed",
+    processStartTime: "10:00 AM",
+    processEndTime: "10:45 AM",
     technician: "Technician D",
     client: "H4205",
     batch: "H4205-BM01-P1-P20260514-01",
@@ -590,6 +639,8 @@ const labScheduleRows = [
     time: "11:30 AM",
     process: "Replate",
     status: "In Process",
+    processStartTime: "11:35 AM",
+    processEndTime: "-",
     technician: "Technician A",
     client: "H4211",
     batch: "H4211-BM01-P0-P20260509-01",
@@ -602,7 +653,9 @@ const labScheduleRows = [
     time: "01:00 PM",
     process: "Shipping",
     status: "Available",
-    technician: "Technician C",
+    processStartTime: "-",
+    processEndTime: "-",
+    technician: "-",
     client: "H4077",
     batch: "H4077-A01-P0-P20260510-02",
     sample: "ADI",
@@ -614,7 +667,9 @@ const labScheduleRows = [
     time: "09:00 AM",
     process: "Passaging",
     status: "Available",
-    technician: "Technician B",
+    processStartTime: "-",
+    processEndTime: "-",
+    technician: "-",
     client: "H4302",
     batch: "H4302-A01-P0-P20260512-01",
     sample: "ADI",
@@ -626,6 +681,8 @@ const labScheduleRows = [
     time: "02:00 PM",
     process: "Freezing",
     status: "Completed",
+    processStartTime: "02:00 PM",
+    processEndTime: "03:15 PM",
     technician: "Technician D",
     client: "H3902",
     batch: "H3902-A01-P2-P20260428-01",
@@ -1259,7 +1316,6 @@ function DashboardShell({ children }) {
 }
 
 function QuarantineDashboard() {
-  const urgent = quarantineRows.filter((r) => r.daysNeeded !== null && r.daysNeeded <= 2).length;
   const [search, setSearch] = useState("");
   const [quickFilter, setQuickFilter] = useState("All");
 
@@ -1276,9 +1332,6 @@ function QuarantineDashboard() {
 
       const matchesQuickFilter =
         quickFilter === "All" ||
-        (quickFilter === "Shipment Flag" && row.shipment === "Yes") ||
-        (quickFilter === "Urgent Needs" && row.daysNeeded !== null && row.daysNeeded <= 2) ||
-        (quickFilter === "Release TBD" && row.release === "TBD") ||
         (quickFilter === "Slow Growth Flag" && row.growth !== "No");
 
       return matchesSearch && matchesQuickFilter;
@@ -1291,11 +1344,8 @@ function QuarantineDashboard() {
 
   return (
     <DashboardShell>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <KpiCard title="In Quarantine" value={quarantineRows.length} note="Show all quarantined batches" icon={AlertTriangle} active={quickFilter === "All"} onClick={() => setQuickFilter("All")} />
-        <KpiCard title="Shipment Flag" value={quarantineRows.filter((r) => r.shipment === "Yes").length} note="May affect shipping" icon={Truck} active={quickFilter === "Shipment Flag"} onClick={() => toggleQuickFilter("Shipment Flag")} />
-        <KpiCard title="Urgent Needs" value={urgent} note="Release needed in ≤ 2 days" icon={TimerReset} active={quickFilter === "Urgent Needs"} onClick={() => toggleQuickFilter("Urgent Needs")} />
-        <KpiCard title="Release TBD" value={quarantineRows.filter((r) => r.release === "TBD").length} note="No expected release date" icon={CalendarClock} active={quickFilter === "Release TBD"} onClick={() => toggleQuickFilter("Release TBD")} />
         <KpiCard title="Slow Growth Flag" value={quarantineRows.filter((r) => r.growth !== "No").length} note="Also in growth dashboard" icon={TrendingDown} active={quickFilter === "Slow Growth Flag"} onClick={() => toggleQuickFilter("Slow Growth Flag")} />
       </div>
       <FilterStrip
@@ -1382,7 +1432,6 @@ function InitialsDashboard() {
 
       const matchesQuickFilter =
         quickFilter === "All" ||
-        (quickFilter === "Shipment Flag" && row.shipment === "Yes") ||
         (quickFilter === "Slow Growth Flag" && row.growth !== "No") ||
         (quickFilter === "Intake Issues" && row.intake !== "None") ||
         (quickFilter === "Discard Flag" && row.discard === "Yes");
@@ -1397,15 +1446,14 @@ function InitialsDashboard() {
 
   return (
     <DashboardShell>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KpiCard title="Initials Growing" value={initialRows.length} note="Show all active initials" icon={FlaskConical} active={quickFilter === "All"} onClick={() => setQuickFilter("All")} />
-        <KpiCard title="Shipment Flag" value={initialRows.filter(r => r.shipment === "Yes").length} note="Linked to requests" icon={Truck} active={quickFilter === "Shipment Flag"} onClick={() => toggleQuickFilter("Shipment Flag")} />
         <KpiCard title="Slow Growth Flag" value={initialRows.filter(r => r.growth !== "No").length} note="Growth concern" icon={TrendingDown} active={quickFilter === "Slow Growth Flag"} onClick={() => toggleQuickFilter("Slow Growth Flag")} />
         <KpiCard title="Intake Issues" value={initialRows.filter(r => r.intake !== "None").length} note="Pulled from intake" icon={ClipboardCheck} active={quickFilter === "Intake Issues"} onClick={() => toggleQuickFilter("Intake Issues")} />
         <KpiCard title="Discard Flag" value={initialRows.filter(r => r.discard === "Yes").length} note="Also in discard view" icon={Trash2} active={quickFilter === "Discard Flag"} onClick={() => toggleQuickFilter("Discard Flag")} />
       </div>
       <FilterStrip
-        filters={[`Showing ${filteredRows.length} of ${initialRows.length}`, quickFilter === "All" ? "All Initials" : quickFilter, "Sample Type", "Days Growing", "Shipment Flag", "Slow Growth Flag", "Discard Flag"]}
+        filters={[`Showing ${filteredRows.length} of ${initialRows.length}`, quickFilter === "All" ? "All Initials" : quickFilter, "Sample Type", "Days Growing", "Slow Growth Flag", "Discard Flag"]}
         onSearchChange={setSearch}
         placeholder="Search client, batch, sample, or issue"
         searchValue={search}
@@ -1437,7 +1485,6 @@ function SlowGrowthDashboard() {
 
       const matchesQuickFilter =
         quickFilter === "All" ||
-        (quickFilter === "Shipment Flag" && row.shipment === "Yes") ||
         (quickFilter === "Initial Batches" && row.initial === "Yes") ||
         (quickFilter === "Replates" && row.stage === "Replate") ||
         (quickFilter === "Quarantine Flag" && row.quarantine === "Yes");
@@ -1452,15 +1499,14 @@ function SlowGrowthDashboard() {
 
   return (
     <DashboardShell>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KpiCard title="Slow/No Growth" value={slowGrowthRows.length} note="Show all growth exceptions" icon={TrendingDown} active={quickFilter === "All"} onClick={() => setQuickFilter("All")} />
-        <KpiCard title="Shipment Flag" value={slowGrowthRows.filter(r => r.shipment === "Yes").length} note="May affect shipping" icon={Truck} active={quickFilter === "Shipment Flag"} onClick={() => toggleQuickFilter("Shipment Flag")} />
         <KpiCard title="Initial Batches" value={slowGrowthRows.filter(r => r.initial === "Yes").length} note="Initial growth concerns" icon={FlaskConical} active={quickFilter === "Initial Batches"} onClick={() => toggleQuickFilter("Initial Batches")} />
         <KpiCard title="Replates" value={slowGrowthRows.filter(r => r.stage === "Replate").length} note="Replate growth concerns" icon={Layers} active={quickFilter === "Replates"} onClick={() => toggleQuickFilter("Replates")} />
         <KpiCard title="Quarantine Flag" value={slowGrowthRows.filter(r => r.quarantine === "Yes").length} note="Also quarantined" icon={AlertTriangle} active={quickFilter === "Quarantine Flag"} onClick={() => toggleQuickFilter("Quarantine Flag")} />
       </div>
       <FilterStrip
-        filters={[`Showing ${filteredRows.length} of ${slowGrowthRows.length}`, quickFilter === "All" ? "All Growth Exceptions" : quickFilter, "Initial/Replate", "Days Growing", "Shipment Flag", "Initial Flag", "Quarantine Flag"]}
+        filters={[`Showing ${filteredRows.length} of ${slowGrowthRows.length}`, quickFilter === "All" ? "All Growth Exceptions" : quickFilter, "Initial/Replate", "Days Growing", "Initial Flag", "Quarantine Flag"]}
         onSearchChange={setSearch}
         placeholder="Search client, batch, or stage"
         searchValue={search}
@@ -1490,7 +1536,6 @@ function DiscardDashboard() {
         quickFilter === "All" ||
         (quickFilter === "Flask Discards" && row.type === "Flask") ||
         (quickFilter === "Vial Discards" && row.type === "Vials") ||
-        (quickFilter === "Shipment Flag" && row.shipment === "Yes") ||
         (quickFilter === "Quarantine Flag" && row.quarantine === "Yes");
 
       return matchesSearch && matchesQuickFilter;
@@ -1503,15 +1548,14 @@ function DiscardDashboard() {
 
   return (
     <DashboardShell>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KpiCard title="Discards" value={discardRows.length} note="Show all discard records" icon={Trash2} active={quickFilter === "All"} onClick={() => setQuickFilter("All")} />
         <KpiCard title="Flask Discards" value={discardRows.filter(r => r.type === "Flask").length} note="Discarded flasks" icon={FlaskConical} active={quickFilter === "Flask Discards"} onClick={() => toggleQuickFilter("Flask Discards")} />
         <KpiCard title="Vial Discards" value={discardRows.filter(r => r.type === "Vials").length} note="Discarded vials" icon={Boxes} active={quickFilter === "Vial Discards"} onClick={() => toggleQuickFilter("Vial Discards")} />
-        <KpiCard title="Shipment Flag" value={discardRows.filter(r => r.shipment === "Yes").length} note="May affect requests" icon={Truck} active={quickFilter === "Shipment Flag"} onClick={() => toggleQuickFilter("Shipment Flag")} />
         <KpiCard title="Quarantine Flag" value={discardRows.filter(r => r.quarantine === "Yes").length} note="Was quarantined" icon={AlertTriangle} active={quickFilter === "Quarantine Flag"} onClick={() => toggleQuickFilter("Quarantine Flag")} />
       </div>
       <FilterStrip
-        filters={[`Showing ${filteredRows.length} of ${discardRows.length}`, quickFilter === "All" ? "All Discards" : quickFilter, "Discard Type", "Reason", "Shipment Flag", "Initial Flag", "Quarantine Flag"]}
+        filters={[`Showing ${filteredRows.length} of ${discardRows.length}`, quickFilter === "All" ? "All Discards" : quickFilter, "Discard Type", "Reason", "Initial Flag", "Quarantine Flag"]}
         onSearchChange={setSearch}
         placeholder="Search client, batch, type, or reason"
         searchValue={search}
@@ -1590,8 +1634,36 @@ function SampleIntakeIssuesReport() {
 }
 
 function ClientLineageReport() {
-  const selectedClient = clientLineageRows[0];
-  const selectedClientRows = [selectedClient];
+  const [clientSearch, setClientSearch] = useState(clientLineageRows[0].client);
+  const [batchTimeFrame, setBatchTimeFrame] = useState("All time");
+  const [batchFlaskSize, setBatchFlaskSize] = useState("All flask sizes");
+  const [batchTissueType, setBatchTissueType] = useState("All tissue types");
+  const query = clientSearch.trim().toLowerCase();
+  const selectedClient =
+    clientLineageRows.find((row) => row.client.toLowerCase() === query) ||
+    clientLineageRows.find((row) => row.client.toLowerCase().includes(query)) ||
+    null;
+  const selectedClientRows = selectedClient ? [selectedClient] : [];
+  const selectedBatchRows = selectedClient?.batchRows || [];
+  const selectedProcessingRows = selectedClient?.processingRows || [];
+  const selectedQualityRows = selectedClient?.qualityRows || [];
+  const batchFlaskOptions = ["All flask sizes", ...Array.from(new Set(selectedBatchRows.map((row) => row.flaskSize)))];
+  const batchTissueOptions = ["All tissue types", ...Array.from(new Set(selectedBatchRows.map((row) => row.tissueType)))];
+  const effectiveBatchFlaskSize = batchFlaskOptions.includes(batchFlaskSize) ? batchFlaskSize : "All flask sizes";
+  const effectiveBatchTissueType = batchTissueOptions.includes(batchTissueType) ? batchTissueType : "All tissue types";
+  const filteredBatchRows = selectedBatchRows.filter((row) => {
+    const currentDate = new Date("2026-05-28T12:00:00");
+    const batchDate = new Date(`${row.processingDate} 12:00:00`);
+    const daysOld = (currentDate - batchDate) / (1000 * 60 * 60 * 24);
+    const matchesTimeFrame =
+      batchTimeFrame === "All time" ||
+      (batchTimeFrame === "Last 7 days" && daysOld <= 7) ||
+      (batchTimeFrame === "Last 30 days" && daysOld <= 30);
+    const matchesFlaskSize = effectiveBatchFlaskSize === "All flask sizes" || row.flaskSize === effectiveBatchFlaskSize;
+    const matchesTissueType = effectiveBatchTissueType === "All tissue types" || row.tissueType === effectiveBatchTissueType;
+
+    return matchesTimeFrame && matchesFlaskSize && matchesTissueType;
+  });
 
   return (
     <DashboardShell>
@@ -1603,31 +1675,55 @@ function ClientLineageReport() {
               <Search size={16} />
               <input
                 className="min-w-0 flex-1 bg-transparent text-slate-700 outline-none placeholder:text-slate-400"
-                defaultValue={selectedClient.client}
+                onChange={(event) => setClientSearch(event.target.value)}
                 placeholder="Search one client ID"
                 type="search"
+                value={clientSearch}
               />
             </span>
           </label>
           <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
             <p className="text-xs font-semibold uppercase text-slate-500">Showing Single Client</p>
-            <p className="mt-1 text-lg font-bold text-slate-900">{selectedClient.client}</p>
+            <p className="mt-1 text-lg font-bold text-slate-900">{selectedClient?.client || "No match"}</p>
           </div>
         </CardContent>
       </Card>
       <DataTable
-        title={`Client Summary: ${selectedClient.client}`}
+        title={`Client Summary: ${selectedClient?.client || "No client selected"}`}
         description="Single-client profile snapshot for tissue samples, batches, and available inventory."
         columns={["Client ID", "Number of Tissue Samples", "Tissue Types", "Total Number of Batches", "Number of Batches Available"]}
         rows={selectedClientRows.map(r => [r.client, r.samples, r.tissueTypes, r.batches, r.availableBatches])}
       />
+      <DataTable
+        title="Client Batches"
+        description="Batch-level lineage details for the selected client."
+        columns={["Client Batch", "Tissue Type", "Flask Size", "Processing Date", "Freezing Date", "Slow Growth", "Quarantine", "Discard"]}
+        headerContent={
+          <div className="grid gap-4 md:grid-cols-3">
+            <ControlledSelectField label="Time Frame" onChange={setBatchTimeFrame} options={["All time", "Last 7 days", "Last 30 days"]} value={batchTimeFrame} />
+            <ControlledSelectField label="Flask Size" onChange={setBatchFlaskSize} options={batchFlaskOptions} value={effectiveBatchFlaskSize} />
+            <ControlledSelectField label="Tissue Type" onChange={setBatchTissueType} options={batchTissueOptions} value={effectiveBatchTissueType} />
+          </div>
+        }
+        rows={filteredBatchRows.map(r => [r.batch, r.tissueType, r.flaskSize, r.processingDate, r.freezingDate, <FlagBadge value={r.slowGrowth} />, <FlagBadge value={r.quarantine} />, <FlagBadge value={r.discard} />])}
+      />
+      <DataTable title="Processing Information" description="Growth and yield metrics by flask size." columns={["Client ID", "Flask Size", "Average Yield", "Average Time to Grow(Hr)", "Standard Dev", "Total Batches"]} rows={selectedProcessingRows.map(r => [selectedClient.client, r.flaskSize, r.avgYield, r.avgGrowHours, r.stdDev, r.totalBatches])} />
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <DataTable title="Intake Information" description="Initial intake issues and tissue sample context." columns={["Client ID", "Initial Intake Issues", "Number of Tissue Samples", "Tissue Type"]} rows={selectedClientRows.map(r => [r.client, r.intakeIssues, r.samples, r.tissueTypes])} />
-        <DataTable title="Processing Information" description="Growth, yield, doubling time, and flask mix." columns={["Client ID", "Average Yield for Each Flask Size", "Average Time in Hours to Grow Out", "Population Doubling Time", "Total Batches", "Batches per Flask Size"]} rows={selectedClientRows.map(r => [r.client, r.avgYield, r.growHours, r.doublingTime, r.batches, r.flaskMix])} />
-        <DataTable title="Shipping / Order Information" description="Order volume and ordering cadence." columns={["Client ID", "Average Vials Ordered", "Ordering Frequency"]} rows={selectedClientRows.map(r => [r.client, r.avgOrdered, r.frequency])} />
         <DataTable title="Current Banking Information" description="Current master and working bank availability." columns={["Client ID", "Master Bank Doses", "Working Bank Doses", "Number of Doses per Passage", "Number of Batches Available"]} rows={selectedClientRows.map(r => [r.client, r.masterBank, r.workingBank, r.passageDoses, r.availableBatches])} />
       </div>
-      <DataTable title="Quality Events" description="Batch-level and shipping-level quality events for this client." columns={["Client ID", "Batch-Level Quality Events", "Shipping-Level Quality Events"]} rows={selectedClientRows.map(r => [r.client, r.qualityEvents, r.shippingEvents])} />
+      <DataTable
+        title="Quality Events"
+        description="Batch-level and shipping-level quality events for this client."
+        columns={["Client ID", "Batch ID", "Batch-Level Quality Events", "Shipping-Level Quality Events", "Export Report"]}
+        rows={selectedQualityRows.map(r => [
+          selectedClient.client,
+          r.batch,
+          r.batchEvent,
+          r.shippingEvent,
+          <Button aria-label={`Export quality event PDF for ${r.batch}`} className="gap-2 rounded-lg px-3 py-1.5" variant="outline"><FileText size={14} /> PDF</Button>,
+        ])}
+      />
     </DashboardShell>
   );
 }
@@ -1767,13 +1863,12 @@ function TimelineSchedule({ rows }) {
             <div key={`${row.batch}-${row.time}`} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase text-slate-500">{row.time}</p>
-                  <p className="mt-1 font-semibold text-slate-900">{row.process}</p>
+                  <p className="font-semibold text-slate-900">{row.process}</p>
                 </div>
                 <OperationalStatusBadge value={row.status} />
               </div>
               <p className="mt-3 truncate text-sm text-slate-600">{row.batch}</p>
-              <p className="mt-1 text-xs text-slate-500">{row.technician} · {row.section}</p>
+              <p className="mt-1 text-xs text-slate-500">{row.technician === "-" ? row.section : `${row.technician} · ${row.section}`}</p>
             </div>
           ))}
         </div>
@@ -1801,7 +1896,19 @@ function RackCard({ rack }) {
       <div className="mt-4 space-y-2 text-sm">
         <div>
           <p className="text-xs uppercase text-slate-500">Current Batches</p>
-          <p className="mt-1 break-words font-medium text-slate-800">{rack.batches.length ? rack.batches.join(", ") : "Open space"}</p>
+          <div className="mt-2 flex flex-col gap-2">
+            {rack.batches.length ? (
+              rack.batches.map((batch) => (
+                <span key={batch} className="rounded-md border border-white/70 bg-white px-2 py-1 font-mono text-xs font-medium text-slate-800 shadow-sm">
+                  {batch}
+                </span>
+              ))
+            ) : (
+              <span className="rounded-md border border-dashed border-emerald-300 bg-white/70 px-2 py-1 text-xs font-medium text-emerald-700">
+                Open space
+              </span>
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-2 text-xs text-slate-600">
           <span>{rack.sample}</span>
@@ -1820,7 +1927,10 @@ function IncubatorGrid() {
         <Card key={incubator} className="rounded-lg shadow-sm">
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">{incubator}</h2>
+              <div>
+                <h2 className="text-lg font-semibold">{incubator}</h2>
+                <p className="text-sm text-slate-500">Capacity view by rack and current batch ID</p>
+              </div>
               <Badge tone="blue">6 racks</Badge>
             </div>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -1836,8 +1946,7 @@ function IncubatorGrid() {
 }
 
 function LabManufacturingScheduleDashboard() {
-  const dueToday = labScheduleRows.filter((row) => row.date === "05/28/2026").length;
-  const activeTechs = new Set(labScheduleRows.filter((row) => row.date === "05/28/2026").map((row) => row.technician)).size;
+  const activeTechs = new Set(labScheduleRows.filter((row) => row.date === "05/28/2026" && row.technician !== "-").map((row) => row.technician)).size;
   const [search, setSearch] = useState("");
   const [quickFilter, setQuickFilter] = useState("All");
 
@@ -1857,8 +1966,7 @@ function LabManufacturingScheduleDashboard() {
         (quickFilter === "Available Tasks" && row.status === "Available") ||
         (quickFilter === "In Process" && row.status === "In Process") ||
         (quickFilter === "Completed" && row.status === "Completed") ||
-        (quickFilter === "Due Today" && row.date === "05/28/2026") ||
-        (quickFilter === "Active Technicians" && row.date === "05/28/2026");
+        (quickFilter === "Active Technicians" && row.date === "05/28/2026" && row.technician !== "-");
 
       return matchesSearch && matchesQuickFilter;
     });
@@ -1870,12 +1978,11 @@ function LabManufacturingScheduleDashboard() {
 
   return (
     <DashboardShell>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
         <KpiCard title="Scheduled Tasks" value={labScheduleRows.length} note="Show all manufacturing tasks" icon={ClipboardList} active={quickFilter === "All"} onClick={() => setQuickFilter("All")} />
         <KpiCard title="Available Tasks" value={labScheduleRows.filter(r => r.status === "Available").length} note="Ready list sections" icon={CheckCircle2} active={quickFilter === "Available Tasks"} onClick={() => toggleQuickFilter("Available Tasks")} />
         <KpiCard title="In Process" value={labScheduleRows.filter(r => r.status === "In Process").length} note="Open process forms" icon={TimerReset} active={quickFilter === "In Process"} onClick={() => toggleQuickFilter("In Process")} />
         <KpiCard title="Completed" value={labScheduleRows.filter(r => r.status === "Completed").length} note="Taken off list" icon={PackageCheck} active={quickFilter === "Completed"} onClick={() => toggleQuickFilter("Completed")} />
-        <KpiCard title="Due Today" value={dueToday} note="Scheduled for May 28" icon={CalendarClock} active={quickFilter === "Due Today"} onClick={() => toggleQuickFilter("Due Today")} />
         <KpiCard title="Active Technicians" value={activeTechs} note="Assigned today" icon={Users} active={quickFilter === "Active Technicians"} onClick={() => toggleQuickFilter("Active Technicians")} />
       </div>
       <FilterStrip
@@ -1897,37 +2004,156 @@ function LabManufacturingScheduleDashboard() {
       <DataTable
         title="Manufacturing Schedule"
         description="Upcoming and active lab manufacturing tasks by process, technician, status, and LIMS section."
-        columns={["Scheduled Date", "Scheduled Time", "Process", "Status", "Technician", "Client ID", "Cell Batch ID", "Sample Type", "Current LIMS Section", "Notes"]}
-        rows={filteredRows.map(r => [r.date, r.time, r.process, <OperationalStatusBadge value={r.status} />, r.technician, r.client, r.batch, r.sample, r.section, r.notes])}
+        columns={["Process", "Status", "Process Start Time", "Process End Time", "Technician", "Client ID", "Cell Batch ID", "Sample Type", "Current LIMS Section", "Notes"]}
+        rows={filteredRows.map(r => [r.process, <OperationalStatusBadge value={r.status} />, r.processStartTime, r.processEndTime, r.technician, r.client, r.batch, r.sample, r.section, r.notes])}
       />
     </DashboardShell>
   );
 }
 
 function IncubatorDashboard() {
-  const capacityRows = [
-    ["Incubator 1", "Rack 1", 4, 2],
-    ["Incubator 1", "Rack 2", 1, 5],
-    ["Incubator 1", "Rack 3", 6, 0],
-    ["Incubator 1", "Rack 4", 3, 3],
-    ["Incubator 1", "Rack 5", 5, 1],
-    ["Incubator 1", "Rack 6", 2, 4],
-    ["Incubator 2", "Rack 1", 6, 0],
-    ["Incubator 2", "Rack 2", 2, 4],
-    ["Incubator 2", "Rack 3", 3, 3],
-    ["Incubator 2", "Rack 4", 5, 1],
-    ["Incubator 2", "Rack 5", 4, 2],
-    ["Incubator 2", "Rack 6", 1, 5],
+  const [showCapacityView, setShowCapacityView] = useState(false);
+  const incubatorRows = [
+    {
+      incubator: "Incubator 1",
+      rackSpace: "Rack 1",
+      client: "H4012",
+      batch: "H4012-A01-P0-P20260508-01",
+      passage: "P0",
+      seedingDate: "05/08/2026",
+      tissue: "ADI",
+      stage: "Initial",
+      confluency: "82%",
+      days: 20,
+      feedingDate: "05/26/2026",
+      feedingType: "Complete",
+      flask: "1-stack",
+    },
+    {
+      incubator: "Incubator 1",
+      rackSpace: "Rack 2",
+      client: "H4205",
+      batch: "H4205-BM01-P1-P20260514-01",
+      passage: "P1",
+      seedingDate: "05/14/2026",
+      tissue: "BM",
+      stage: "Replate",
+      confluency: "76%",
+      days: 14,
+      feedingDate: "05/27/2026",
+      feedingType: "Partial",
+      flask: "5-stack",
+    },
+    {
+      incubator: "Incubator 1",
+      rackSpace: "Rack 2",
+      client: "H4211",
+      batch: "H4211-BM01-P0-P20260509-01",
+      passage: "P0",
+      seedingDate: "05/09/2026",
+      tissue: "BM",
+      stage: "Initial",
+      confluency: "58%",
+      days: 19,
+      feedingDate: "05/25/2026",
+      feedingType: "Partial",
+      flask: "2-stack",
+    },
+    {
+      incubator: "Incubator 1",
+      rackSpace: "Rack 4",
+      client: "H4150",
+      batch: "H4150-CT01-P0-P20260511-01",
+      passage: "P0",
+      seedingDate: "05/11/2026",
+      tissue: "NB - Cord Tissue",
+      stage: "Initial",
+      confluency: "69%",
+      days: 17,
+      feedingDate: "05/27/2026",
+      feedingType: "Complete",
+      flask: "2-stack",
+    },
+    {
+      incubator: "Incubator 1",
+      rackSpace: "Rack 6",
+      client: "H3988",
+      batch: "H3988-CB01-P0-P20260503-01",
+      passage: "P0",
+      seedingDate: "05/03/2026",
+      tissue: "NB - Cord Blood",
+      stage: "Initial",
+      confluency: "51%",
+      days: 25,
+      feedingDate: "05/24/2026",
+      feedingType: "Partial",
+      flask: "1-stack",
+    },
+    {
+      incubator: "Incubator 2",
+      rackSpace: "Rack 2",
+      client: "H4302",
+      batch: "H4302-A01-P0-P20260512-01",
+      passage: "P0",
+      seedingDate: "05/12/2026",
+      tissue: "ADI",
+      stage: "Initial",
+      confluency: "74%",
+      days: 16,
+      feedingDate: "05/26/2026",
+      feedingType: "Complete",
+      flask: "2-stack",
+    },
+    {
+      incubator: "Incubator 2",
+      rackSpace: "Rack 3",
+      client: "H4077",
+      batch: "H4077-A01-P0-P20260510-02",
+      passage: "P0",
+      seedingDate: "05/10/2026",
+      tissue: "ADI",
+      stage: "Initial",
+      confluency: "88%",
+      days: 18,
+      feedingDate: "05/27/2026",
+      feedingType: "Complete",
+      flask: "5-stack",
+    },
+    {
+      incubator: "Incubator 2",
+      rackSpace: "Rack 5",
+      client: "H3888",
+      batch: "H3888-CT01-P0-P20260501-01",
+      passage: "P0",
+      seedingDate: "05/01/2026",
+      tissue: "NB - Cord Tissue",
+      stage: "Initial",
+      confluency: "63%",
+      days: 27,
+      feedingDate: "05/23/2026",
+      feedingType: "Partial",
+      flask: "2-stack",
+    },
   ];
 
   return (
     <DashboardShell>
-      <DataTable
-        title="Incubator Capacity"
-        description="Available and occupied space by incubator rack."
-        columns={["Incubator", "Rack", "Total Spaces Available", "Total Spaces Occupied"]}
-        rows={capacityRows}
-      />
+      <div className="flex justify-end">
+        <Button className="gap-2 rounded-lg" onClick={() => setShowCapacityView((current) => !current)} variant="outline">
+          <Warehouse size={16} />
+          {showCapacityView ? "Table View" : "Capacity View"}
+        </Button>
+      </div>
+      {showCapacityView ? (
+        <IncubatorGrid />
+      ) : (
+        <DataTable
+          title="Incubator"
+          description="Active incubator batches, feeding status, confluency, and flask details."
+          columns={["Incubator", "Rack Space", "Client ID", "Batch ID", "Passage #", "Seeding Date", "Tissue Type", "Replate/Initial", "Last Confluency", "Days Incubator", "Last Feeding Date", "Last Feeding Type (Complete/ Partial)", "Flask Size"]}
+          rows={incubatorRows.map(r => [r.incubator, r.rackSpace, r.client, r.batch, r.passage, r.seedingDate, r.tissue, r.stage, r.confluency, r.days, r.feedingDate, r.feedingType, r.flask])}
+        />
+      )}
     </DashboardShell>
   );
 }
@@ -1983,10 +2209,6 @@ function LabOperationalDashboardPage() {
             Scheduling and incubator capacity views for active lab manufacturing operations.
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" className="gap-2 rounded-lg"><Filter size={16} /> Filters</Button>
-          <Button className="gap-2 rounded-lg"><MapPinned size={16} /> Capacity View</Button>
-        </div>
       </div>
       <LabDashboardTabs active={activeLab} setActive={setActiveLab} />
       {view}
@@ -1994,13 +2216,14 @@ function LabOperationalDashboardPage() {
   );
 }
 
-function DataTable({ columns, rows, title = "Detailed Work Queue", description = "Main operational table for review, filtering, and follow-up." }) {
+function DataTable({ columns, rows, title = "Detailed Work Queue", description = "Main operational table for review, filtering, and follow-up.", headerContent = null }) {
   return (
     <Card className="rounded-lg shadow-sm">
       <CardContent className="p-5">
-        <div className="mb-4">
+        <div className="mb-4 space-y-4">
           <h2 className="text-lg font-semibold">{title}</h2>
           <p className="text-sm text-slate-500">{description}</p>
+          {headerContent}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1100px] border-collapse text-left text-sm">
