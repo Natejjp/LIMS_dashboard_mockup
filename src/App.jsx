@@ -22,7 +22,6 @@ import {
   Snowflake,
   Beaker,
   Wrench,
-  Warehouse,
   ClipboardList,
   ChevronDown,
 } from "lucide-react";
@@ -309,6 +308,7 @@ const discardRows = [
     client: "H4211",
     batch: "H4211-BM01-P0-P20260509-01",
     type: "Flask",
+    discardDate: "05/28/2026",
     reason: "No growth after review period",
     vialsDiscard: "-",
     shipment: "Yes",
@@ -319,6 +319,7 @@ const discardRows = [
     client: "H4077",
     batch: "H4077-A01-P0-P20260510-02",
     type: "Vials",
+    discardDate: "05/24/2026",
     reason: "Low dose count",
     vialsDiscard: 4,
     shipment: "Yes",
@@ -329,6 +330,7 @@ const discardRows = [
     client: "H3902",
     batch: "H3902-A01-P2-P20260428-01",
     type: "Flask",
+    discardDate: "05/14/2026",
     reason: "Contamination concern",
     vialsDiscard: "-",
     shipment: "No",
@@ -339,6 +341,7 @@ const discardRows = [
     client: "H3888",
     batch: "H3888-CT01-P0-P20260501-01",
     type: "Vials",
+    discardDate: "05/02/2026",
     reason: "Client-requested discard",
     vialsDiscard: 6,
     shipment: "No",
@@ -706,136 +709,6 @@ const labScheduleRows = [
     section: "Taken Off List",
     notes: "Removed after discard decision.",
   },
-];
-
-const incubatorSpaces = [
-  {
-    incubator: "Incubator 1",
-    rack: "Rack 1",
-    status: "Occupied",
-    batches: ["H4012-A01-P0-P20260508-01"],
-    sample: "ADI",
-    days: 5,
-    owner: "Technician A",
-    updated: "05/28/2026 07:45 AM",
-  },
-  {
-    incubator: "Incubator 1",
-    rack: "Rack 2",
-    status: "Near Capacity",
-    batches: ["H4205-BM01-P1-P20260514-01", "H4211-BM01-P0-P20260509-01"],
-    sample: "BM",
-    days: 9,
-    owner: "Technician B",
-    updated: "05/28/2026 08:10 AM",
-  },
-  {
-    incubator: "Incubator 1",
-    rack: "Rack 3",
-    status: "Available",
-    batches: [],
-    sample: "None",
-    days: 0,
-    owner: "Unassigned",
-    updated: "05/28/2026 06:30 AM",
-  },
-  {
-    incubator: "Incubator 1",
-    rack: "Rack 4",
-    status: "Occupied",
-    batches: ["H4150-CT01-P0-P20260511-01"],
-    sample: "NB - Cord Tissue",
-    days: 7,
-    owner: "Technician C",
-    updated: "05/28/2026 08:35 AM",
-  },
-  {
-    incubator: "Incubator 1",
-    rack: "Rack 5",
-    status: "Available",
-    batches: [],
-    sample: "None",
-    days: 0,
-    owner: "Unassigned",
-    updated: "05/28/2026 06:30 AM",
-  },
-  {
-    incubator: "Incubator 1",
-    rack: "Rack 6",
-    status: "Occupied",
-    batches: ["H3988-CB01-P0-P20260503-01"],
-    sample: "NB - Cord Blood",
-    days: 12,
-    owner: "Technician D",
-    updated: "05/28/2026 07:55 AM",
-  },
-  {
-    incubator: "Incubator 2",
-    rack: "Rack 1",
-    status: "Available",
-    batches: [],
-    sample: "None",
-    days: 0,
-    owner: "Unassigned",
-    updated: "05/28/2026 06:40 AM",
-  },
-  {
-    incubator: "Incubator 2",
-    rack: "Rack 2",
-    status: "Occupied",
-    batches: ["H4302-A01-P0-P20260512-01"],
-    sample: "ADI",
-    days: 4,
-    owner: "Technician A",
-    updated: "05/28/2026 08:20 AM",
-  },
-  {
-    incubator: "Incubator 2",
-    rack: "Rack 3",
-    status: "Near Capacity",
-    batches: ["H4077-A01-P0-P20260510-02", "H4099-A01-P2-P20260507-01"],
-    sample: "ADI",
-    days: 10,
-    owner: "Technician C",
-    updated: "05/28/2026 08:05 AM",
-  },
-  {
-    incubator: "Incubator 2",
-    rack: "Rack 4",
-    status: "Available",
-    batches: [],
-    sample: "None",
-    days: 0,
-    owner: "Unassigned",
-    updated: "05/28/2026 06:40 AM",
-  },
-  {
-    incubator: "Incubator 2",
-    rack: "Rack 5",
-    status: "Occupied",
-    batches: ["H3888-CT01-P0-P20260501-01"],
-    sample: "NB - Cord Tissue",
-    days: 15,
-    owner: "Technician B",
-    updated: "05/28/2026 07:25 AM",
-  },
-  {
-    incubator: "Incubator 2",
-    rack: "Rack 6",
-    status: "Available",
-    batches: [],
-    sample: "None",
-    days: 0,
-    owner: "Unassigned",
-    updated: "05/28/2026 06:40 AM",
-  },
-];
-
-const incubatorHistoryRows = [
-  ["Incubator 1", "Rack 1", "H3902-A01-P2-P20260428-01", "ADI", "05/10/2026", "05/20/2026", "10 days", "Technician D"],
-  ["Incubator 1", "Rack 4", "H3888-CT01-P0-P20260501-01", "NB - Cord Tissue", "05/03/2026", "05/14/2026", "11 days", "Technician B"],
-  ["Incubator 2", "Rack 2", "H4031-A01-P1-P20260502-01", "ADI", "05/05/2026", "05/16/2026", "11 days", "Technician A"],
-  ["Incubator 2", "Rack 5", "H4205-BM01-P0-P20260430-01", "BM", "05/01/2026", "05/12/2026", "11 days", "Technician C"],
 ];
 
 const equipmentRows = [
@@ -1466,7 +1339,7 @@ function InitialsDashboard() {
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Initials by Sample Type</h2><SimpleBarVisual label="ADI" value={1} max={3} /><SimpleBarVisual label="BM" value={1} max={3} /><SimpleBarVisual label="Cord Blood" value={1} max={3} /><SimpleBarVisual label="Cord Tissue" value={1} max={3} /></CardContent></Card>
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Days Growing Buckets</h2><SimpleBarVisual label="0–7 days" value={0} max={4} /><SimpleBarVisual label="8–14 days" value={3} max={4} /><SimpleBarVisual label="15+ days" value={1} max={4} /></CardContent></Card>
       </div>
-      <DataTable title="Initials" columns={["Client ID", "Cell Batch ID", "Sample Type", "Days Growing", "Passaged", "Slow Growth", "Discard", "Intake Issues"]} rows={filteredRows.map(r => [r.client, r.batch, r.sample, `${r.days} days`, <FlagBadge value={r.passaged} />, <FlagBadge value={r.growth === "No" ? "No" : "Yes"} />, <FlagBadge value={r.discard} />, r.intake])} />
+      <DataTable title="Initials" columns={["Client ID", "Cell Batch ID", "Sample Type", "Days Growing", "Passaged", "Slow Growth", "Intake Issues"]} rows={filteredRows.map(r => [r.client, r.batch, r.sample, `${r.days} days`, <FlagBadge value={r.passaged} />, <FlagBadge value={r.growth === "No" ? "No" : "Yes"} />, r.intake])} />
     </DashboardShell>
   );
 }
@@ -1519,7 +1392,7 @@ function SlowGrowthDashboard() {
         controls={<ControlledSelectField label="Flask Size" onChange={setFlaskSize} options={flaskSizeOptions} value={flaskSize} />}
         showTags={false}
       />
-      <DataTable title="Slow/No Growth" columns={["Client ID", "Batch ID", "Initial or Replate", "Flask Size", "Days Growing", "Quarantine", "Discard"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="blue">{r.stage}</Badge>, r.flaskSize, `${r.days} days`, <FlagBadge value={r.quarantine} />, <FlagBadge value={r.discard} />])} />
+      <DataTable title="Slow/No Growth" columns={["Client ID", "Batch ID", "Initial or Replate", "Flask Size", "Days Growing", "Quarantine"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="blue">{r.stage}</Badge>, r.flaskSize, `${r.days} days`, <FlagBadge value={r.quarantine} />])} />
     </DashboardShell>
   );
 }
@@ -1527,14 +1400,20 @@ function SlowGrowthDashboard() {
 function DiscardDashboard() {
   const [search, setSearch] = useState("");
   const [quickFilter, setQuickFilter] = useState("All");
+  const [timeRange, setTimeRange] = useState("30 days");
 
   const filteredRows = useMemo(() => {
     const query = search.trim().toLowerCase();
+    const currentDate = new Date("2026-05-28T12:00:00");
+    const rangeDays = timeRange === "Today" ? 0 : timeRange === "7 days" ? 7 : 30;
 
     return discardRows.filter((row) => {
+      const rowDate = new Date(`${row.discardDate} 12:00:00`);
+      const daysOld = (currentDate - rowDate) / (1000 * 60 * 60 * 24);
+      const matchesTimeRange = daysOld >= 0 && daysOld <= rangeDays;
       const matchesSearch =
         !query ||
-        [row.client, row.batch, row.type, row.reason]
+        [row.client, row.batch, row.type, row.reason, row.discardDate]
           .join(" ")
           .toLowerCase()
           .includes(query);
@@ -1545,9 +1424,9 @@ function DiscardDashboard() {
         (quickFilter === "Vial Discards" && row.type === "Vials") ||
         (quickFilter === "Quarantine Flag" && row.quarantine === "Yes");
 
-      return matchesSearch && matchesQuickFilter;
+      return matchesSearch && matchesTimeRange && matchesQuickFilter;
     });
-  }, [quickFilter, search]);
+  }, [quickFilter, search, timeRange]);
 
   const toggleQuickFilter = (filterName) => {
     setQuickFilter((current) => (current === filterName ? "All" : filterName));
@@ -1566,6 +1445,7 @@ function DiscardDashboard() {
         onSearchChange={setSearch}
         placeholder="Search client, batch, type, or reason"
         searchValue={search}
+        controls={<ControlledSelectField label="Time Range" onChange={setTimeRange} options={["Today", "7 days", "30 days"]} value={timeRange} />}
         showTags={false}
       />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -1883,74 +1763,6 @@ function TimelineSchedule({ rows }) {
   );
 }
 
-function RackCard({ rack }) {
-  const statusStyles = {
-    Available: "border-emerald-200 bg-emerald-50",
-    Occupied: "border-blue-200 bg-blue-50",
-    "Near Capacity": "border-yellow-200 bg-yellow-50",
-  };
-
-  return (
-    <div className={`rounded-lg border p-4 ${statusStyles[rack.status] || "border-slate-200 bg-slate-50"}`}>
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold text-slate-900">{rack.rack}</p>
-          <p className="mt-1 text-xs text-slate-500">{rack.owner}</p>
-        </div>
-        <OperationalStatusBadge value={rack.status} />
-      </div>
-      <div className="mt-4 space-y-2 text-sm">
-        <div>
-          <p className="text-xs uppercase text-slate-500">Current Batches</p>
-          <div className="mt-2 flex flex-col gap-2">
-            {rack.batches.length ? (
-              rack.batches.map((batch) => (
-                <span key={batch} className="rounded-md border border-white/70 bg-white px-2 py-1 font-mono text-xs font-medium text-slate-800 shadow-sm">
-                  {batch}
-                </span>
-              ))
-            ) : (
-              <span className="rounded-md border border-dashed border-emerald-300 bg-white/70 px-2 py-1 text-xs font-medium text-emerald-700">
-                Open space
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-2 text-xs text-slate-600">
-          <span>{rack.sample}</span>
-          <span>{rack.days} days</span>
-        </div>
-        <p className="text-xs text-slate-500">Updated {rack.updated}</p>
-      </div>
-    </div>
-  );
-}
-
-function IncubatorGrid() {
-  return (
-    <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-      {["Incubator 1", "Incubator 2"].map((incubator) => (
-        <Card key={incubator} className="rounded-lg shadow-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold">{incubator}</h2>
-                <p className="text-sm text-slate-500">Capacity view by rack and current batch ID</p>
-              </div>
-              <Badge tone="blue">6 racks</Badge>
-            </div>
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
-              {incubatorSpaces.filter((space) => space.incubator === incubator).map((rack) => (
-                <RackCard key={`${rack.incubator}-${rack.rack}`} rack={rack} />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-}
-
 function LabManufacturingScheduleDashboard() {
   const activeTechs = new Set(labScheduleRows.filter((row) => row.date === "05/28/2026" && row.technician !== "-").map((row) => row.technician)).size;
   const [search, setSearch] = useState("");
@@ -2025,7 +1837,6 @@ function LabManufacturingScheduleDashboard() {
 }
 
 function IncubatorDashboard() {
-  const [showCapacityView, setShowCapacityView] = useState(false);
   const incubatorRows = [
     {
       incubator: "Incubator 1",
@@ -2169,22 +1980,12 @@ function IncubatorDashboard() {
           </div>
         </CardContent>
       </Card>
-      <div className="flex justify-end">
-        <Button className="gap-2 rounded-lg" onClick={() => setShowCapacityView((current) => !current)} variant="outline">
-          <Warehouse size={16} />
-          {showCapacityView ? "Table View" : "Capacity View"}
-        </Button>
-      </div>
-      {showCapacityView ? (
-        <IncubatorGrid />
-      ) : (
-        <DataTable
-          title="Incubator"
-          description="Active incubator batches, feeding status, confluency, and flask details."
-          columns={["Incubator", "Rack Space", "Client ID", "Batch ID", "Passage #", "Seeding Date", "Tissue Type", "Replate/Initial", "Last Confluency", "Days Incubator", "Last Feeding Date", "Last Feeding Type", "Flask Size"]}
-          rows={incubatorRows.map(r => [r.incubator, r.rackSpace, r.client, r.batch, r.passage, r.seedingDate, r.tissue, r.stage, r.confluency, r.days, r.feedingDate, r.feedingType, r.flask])}
-        />
-      )}
+      <DataTable
+        title="Incubator"
+        description="Active incubator batches, feeding status, confluency, and flask details."
+        columns={["Client ID", "Batch ID", "Passage #", "Seeding Date", "Tissue Type", "Replate/Initial", "Last Confluency", "Days Incubator", "Last Feeding Date", "Last Feeding Type", "Flask Size"]}
+        rows={incubatorRows.map(r => [r.client, r.batch, r.passage, r.seedingDate, r.tissue, r.stage, r.confluency, r.days, r.feedingDate, r.feedingType, r.flask])}
+      />
     </DashboardShell>
   );
 }
