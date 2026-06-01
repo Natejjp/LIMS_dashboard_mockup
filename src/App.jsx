@@ -432,11 +432,11 @@ const clientLineageRows = [
     workingBank: 28,
     passageDoses: "P0: 16, P1: 24, P2: 30",
     batchRows: [
-      { batch: "H4012-A01-P0-P20260508-01", tissueType: "ADI", flaskSize: "1-stack", processingDate: "05/08/2026", freezingDate: "05/20/2026", slowGrowth: "No", quarantine: "No", discard: "No" },
-      { batch: "H4012-A01-P1-P20260512-01", tissueType: "ADI", flaskSize: "2-stack", processingDate: "05/12/2026", freezingDate: "05/24/2026", slowGrowth: "No", quarantine: "Yes", discard: "No" },
-      { batch: "H4012-BM01-P0-P20260509-01", tissueType: "BM", flaskSize: "2-stack", processingDate: "05/09/2026", freezingDate: "05/22/2026", slowGrowth: "Yes", quarantine: "No", discard: "No" },
-      { batch: "H4012-BM01-P1-P20260515-01", tissueType: "BM", flaskSize: "1-stack", processingDate: "05/15/2026", freezingDate: "-", slowGrowth: "No", quarantine: "No", discard: "No" },
-      { batch: "H4012-A01-P2-P20260518-01", tissueType: "ADI", flaskSize: "2-stack", processingDate: "05/18/2026", freezingDate: "-", slowGrowth: "No", quarantine: "No", discard: "Yes" },
+      { batch: "H4012-A01-P0-P20260508-01", tissueType: "ADI", flaskSize: "1-stack", processingDate: "05/08/2026", freezingDate: "05/20/2026", vialsYielded: 16, slowGrowth: "No", quarantine: "No", discard: "No" },
+      { batch: "H4012-A01-P1-P20260512-01", tissueType: "ADI", flaskSize: "2-stack", processingDate: "05/12/2026", freezingDate: "05/24/2026", vialsYielded: 21, slowGrowth: "No", quarantine: "Yes", discard: "No" },
+      { batch: "H4012-BM01-P0-P20260509-01", tissueType: "BM", flaskSize: "2-stack", processingDate: "05/09/2026", freezingDate: "05/22/2026", vialsYielded: 19, slowGrowth: "Yes", quarantine: "No", discard: "No" },
+      { batch: "H4012-BM01-P1-P20260515-01", tissueType: "BM", flaskSize: "1-stack", processingDate: "05/15/2026", freezingDate: "-", vialsYielded: "-", slowGrowth: "No", quarantine: "No", discard: "No" },
+      { batch: "H4012-A01-P2-P20260518-01", tissueType: "ADI", flaskSize: "2-stack", processingDate: "05/18/2026", freezingDate: "-", vialsYielded: "-", slowGrowth: "No", quarantine: "No", discard: "Yes" },
     ],
     qualityEvents: "Sterility review",
     qualityRows: [
@@ -466,10 +466,10 @@ const clientLineageRows = [
     workingBank: 18,
     passageDoses: "P0: 8, P1: 18, P2: 16",
     batchRows: [
-      { batch: "H4205-BM01-P0-P20260430-01", tissueType: "BM", flaskSize: "2-stack", processingDate: "04/30/2026", freezingDate: "05/12/2026", slowGrowth: "No", quarantine: "No", discard: "No" },
-      { batch: "H4205-BM01-P1-P20260514-01", tissueType: "BM", flaskSize: "5-stack", processingDate: "05/14/2026", freezingDate: "05/28/2026", slowGrowth: "No", quarantine: "No", discard: "No" },
-      { batch: "H4205-BM01-P2-P20260516-01", tissueType: "BM", flaskSize: "5-stack", processingDate: "05/16/2026", freezingDate: "-", slowGrowth: "Yes", quarantine: "Yes", discard: "No" },
-      { batch: "H4205-BM01-P3-P20260518-01", tissueType: "BM", flaskSize: "2-stack", processingDate: "05/18/2026", freezingDate: "-", slowGrowth: "No", quarantine: "No", discard: "Yes" },
+      { batch: "H4205-BM01-P0-P20260430-01", tissueType: "BM", flaskSize: "2-stack", processingDate: "04/30/2026", freezingDate: "05/12/2026", vialsYielded: 13, slowGrowth: "No", quarantine: "No", discard: "No" },
+      { batch: "H4205-BM01-P1-P20260514-01", tissueType: "BM", flaskSize: "5-stack", processingDate: "05/14/2026", freezingDate: "05/28/2026", vialsYielded: 17, slowGrowth: "No", quarantine: "No", discard: "No" },
+      { batch: "H4205-BM01-P2-P20260516-01", tissueType: "BM", flaskSize: "5-stack", processingDate: "05/16/2026", freezingDate: "-", vialsYielded: "-", slowGrowth: "Yes", quarantine: "Yes", discard: "No" },
+      { batch: "H4205-BM01-P3-P20260518-01", tissueType: "BM", flaskSize: "2-stack", processingDate: "05/18/2026", freezingDate: "-", vialsYielded: "-", slowGrowth: "No", quarantine: "No", discard: "Yes" },
     ],
     qualityEvents: "QA form correction",
     qualityRows: [
@@ -499,9 +499,9 @@ const clientLineageRows = [
     workingBank: 9,
     passageDoses: "P0: 6, P1: 10, P2: 7",
     batchRows: [
-      { batch: "H3988-CB01-P0-P20260503-01", tissueType: "NB - Cord Blood", flaskSize: "1-stack", processingDate: "05/03/2026", freezingDate: "-", slowGrowth: "Yes", quarantine: "No", discard: "No" },
-      { batch: "H3988-CT01-P0-P20260501-01", tissueType: "NB - Cord Tissue", flaskSize: "2-stack", processingDate: "05/01/2026", freezingDate: "05/14/2026", slowGrowth: "No", quarantine: "Yes", discard: "No" },
-      { batch: "H3988-CB01-P1-P20260510-01", tissueType: "NB - Cord Blood", flaskSize: "2-stack", processingDate: "05/10/2026", freezingDate: "-", slowGrowth: "No", quarantine: "No", discard: "Yes" },
+      { batch: "H3988-CB01-P0-P20260503-01", tissueType: "NB - Cord Blood", flaskSize: "1-stack", processingDate: "05/03/2026", freezingDate: "-", vialsYielded: "-", slowGrowth: "Yes", quarantine: "No", discard: "No" },
+      { batch: "H3988-CT01-P0-P20260501-01", tissueType: "NB - Cord Tissue", flaskSize: "2-stack", processingDate: "05/01/2026", freezingDate: "05/14/2026", vialsYielded: 12, slowGrowth: "No", quarantine: "Yes", discard: "No" },
+      { batch: "H3988-CB01-P1-P20260510-01", tissueType: "NB - Cord Blood", flaskSize: "2-stack", processingDate: "05/10/2026", freezingDate: "-", vialsYielded: "-", slowGrowth: "No", quarantine: "No", discard: "Yes" },
     ],
     qualityEvents: "Slow growth review",
     qualityRows: [
@@ -1701,7 +1701,7 @@ function ClientLineageReport() {
       <DataTable
         title="Client Batches"
         description="Batch-level lineage details for the selected client."
-        columns={["Client Batch", "Tissue Type", "Flask Size", "Processing Date", "Freezing Date", "Slow Growth", "Quarantine", "Discard"]}
+        columns={["Client Batch", "Tissue Type", "Flask Size", "Processing Date", "Freezing Date", "Vials Yielded", "Slow Growth", "Quarantine", "Discard"]}
         headerContent={
           <div className="grid gap-4 md:grid-cols-3">
             <ControlledSelectField label="Time Frame" onChange={setBatchTimeFrame} options={["All time", "Last 7 days", "Last 30 days"]} value={batchTimeFrame} />
@@ -1709,7 +1709,7 @@ function ClientLineageReport() {
             <ControlledSelectField label="Tissue Type" onChange={setBatchTissueType} options={batchTissueOptions} value={effectiveBatchTissueType} />
           </div>
         }
-        rows={filteredBatchRows.map(r => [r.batch, r.tissueType, r.flaskSize, r.processingDate, r.freezingDate, <FlagBadge value={r.slowGrowth} />, <FlagBadge value={r.quarantine} />, <FlagBadge value={r.discard} />])}
+        rows={filteredBatchRows.map(r => [r.batch, r.tissueType, r.flaskSize, r.processingDate, r.freezingDate, r.freezingDate === "-" ? "-" : r.vialsYielded, <FlagBadge value={r.slowGrowth} />, <FlagBadge value={r.quarantine} />, <FlagBadge value={r.discard} />])}
       />
       <DataTable title="Processing Information" description="Growth and yield metrics by flask size." columns={["Client ID", "Flask Size", "Average Yield", "Average Time to Grow(Hr)", "Standard Dev", "Total Batches"]} rows={selectedProcessingRows.map(r => [selectedClient.client, r.flaskSize, r.avgYield, r.avgGrowHours, r.stdDev, r.totalBatches])} />
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
