@@ -2138,6 +2138,24 @@ function IncubatorDashboard() {
 
   return (
     <DashboardShell>
+      <Card className="rounded-lg shadow-sm">
+        <CardContent className="grid gap-4 p-5 md:grid-cols-2">
+          <div>
+            <h2 className="text-lg font-semibold">Entry Rules</h2>
+            <ul className="mt-3 space-y-2 text-sm text-slate-600">
+              <li>Plate is in the confluence check process</li>
+              <li>Batch had an Isolation, Replate, or Passage performed</li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold">Exit Rules</h2>
+            <ul className="mt-3 space-y-2 text-sm text-slate-600">
+              <li>Discard of plate</li>
+              <li>Freezing of plate or batch</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
       <div className="flex justify-end">
         <Button className="gap-2 rounded-lg" onClick={() => setShowCapacityView((current) => !current)} variant="outline">
           <Warehouse size={16} />
