@@ -538,6 +538,10 @@ const cleanroomRows = [
     confluency: "86%",
     growTime: "74 hrs",
     stdDev: 2.4,
+    isolationProcessingTime: "2.2 hrs",
+    replatingProcessingTime: "1.4 hrs",
+    freezingProcessingTime: "1.1 hrs",
+    passagingProcessTime: "1.6 hrs",
     freezings: 14,
     passagings: 22,
     discards: 1,
@@ -551,6 +555,10 @@ const cleanroomRows = [
     confluency: "82%",
     growTime: "91 hrs",
     stdDev: 3.1,
+    isolationProcessingTime: "2.8 hrs",
+    replatingProcessingTime: "1.7 hrs",
+    freezingProcessingTime: "1.3 hrs",
+    passagingProcessTime: "1.9 hrs",
     freezings: 10,
     passagings: 18,
     discards: 3,
@@ -564,6 +572,10 @@ const cleanroomRows = [
     confluency: "89%",
     growTime: "104 hrs",
     stdDev: 4.2,
+    isolationProcessingTime: "3.1 hrs",
+    replatingProcessingTime: "2.0 hrs",
+    freezingProcessingTime: "1.5 hrs",
+    passagingProcessTime: "2.2 hrs",
     freezings: 8,
     passagings: 16,
     discards: 2,
@@ -577,6 +589,10 @@ const cleanroomRows = [
     confluency: "84%",
     growTime: "96 hrs",
     stdDev: 2.8,
+    isolationProcessingTime: "2.6 hrs",
+    replatingProcessingTime: "1.8 hrs",
+    freezingProcessingTime: "1.2 hrs",
+    passagingProcessTime: "1.7 hrs",
     freezings: 11,
     passagings: 19,
     discards: 1,
@@ -590,6 +606,10 @@ const cleanroomRows = [
     confluency: "91%",
     growTime: "80 hrs",
     stdDev: 3.6,
+    isolationProcessingTime: "2.4 hrs",
+    replatingProcessingTime: "1.5 hrs",
+    freezingProcessingTime: "1.4 hrs",
+    passagingProcessTime: "1.8 hrs",
     freezings: 9,
     passagings: 15,
     discards: 0,
@@ -1171,14 +1191,16 @@ function LabCleanroomFilters({
   onFlaskSizeChange,
   onSearchChange,
   onTechnicianChange,
+  onTissueTypeChange,
   onTimeRangeChange,
   search,
   technician,
+  tissueType,
   timeRange,
 }) {
   return (
     <Card className="rounded-lg shadow-sm">
-      <CardContent className="grid gap-4 p-4 md:grid-cols-2 xl:grid-cols-4">
+      <CardContent className="grid gap-4 p-4 md:grid-cols-2 xl:grid-cols-5">
         <label className="flex min-w-0 flex-col gap-1 text-sm">
           <span className="font-medium text-slate-600">Search</span>
           <span className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-slate-500">
@@ -1193,6 +1215,7 @@ function LabCleanroomFilters({
           </span>
         </label>
         <ControlledSelectField label="Time Range" onChange={onTimeRangeChange} options={["All time", "Last 7 days", "Last 30 days"]} value={timeRange} />
+        <ControlledSelectField label="Tissue Type" onChange={onTissueTypeChange} options={["All tissue types", "ADI", "BM", "NB - Cord Blood", "NB - Cord Tissue"]} value={tissueType} />
         <ControlledSelectField label="Flask Size" onChange={onFlaskSizeChange} options={["All flask sizes", "1-stack", "2-stack", "5-stack"]} value={flaskSize} />
         <ControlledSelectField label="Technician" onChange={onTechnicianChange} options={["All technicians", "Technician A", "Technician B", "Technician C"]} value={technician} />
       </CardContent>
@@ -1619,6 +1642,7 @@ function LabCleanroomReport() {
   const [search, setSearch] = useState("");
   const [timeRange, setTimeRange] = useState("All time");
   const [flaskSize, setFlaskSize] = useState("All flask sizes");
+  const [tissueType, setTissueType] = useState("All tissue types");
   const [technician, setTechnician] = useState("All technicians");
 
   const filteredRows = useMemo(() => {
@@ -1631,6 +1655,7 @@ function LabCleanroomReport() {
       const daysOld = (currentDate - rowDate) / (1000 * 60 * 60 * 24);
       const matchesTimeRange = rangeDays === null || daysOld <= rangeDays;
       const matchesFlask = flaskSize === "All flask sizes" || row.flask === flaskSize;
+      const matchesTissue = tissueType === "All tissue types" || row.tissue === tissueType;
       const matchesTechnician = technician === "All technicians" || row.technician === technician;
       const matchesSearch =
         !query ||
@@ -1639,9 +1664,9 @@ function LabCleanroomReport() {
           .toLowerCase()
           .includes(query);
 
-      return matchesSearch && matchesTimeRange && matchesFlask && matchesTechnician;
+      return matchesSearch && matchesTimeRange && matchesFlask && matchesTissue && matchesTechnician;
     });
-  }, [flaskSize, search, technician, timeRange]);
+  }, [flaskSize, search, technician, tissueType, timeRange]);
 
   const total = Math.max(1, filteredRows.length);
   const avg = (key) => (filteredRows.reduce((sum, r) => sum + r[key], 0) / total).toFixed(1);
@@ -1651,6 +1676,55 @@ function LabCleanroomReport() {
   const avgGrowTime = filteredRows.length
     ? `${Math.round(filteredRows.reduce((sum, r) => sum + Number.parseInt(r.growTime, 10), 0) / filteredRows.length)} hrs`
     : "0 hrs";
+  const technicianRows = useMemo(() => {
+    const getHours = (value) => Number.parseFloat(String(value).replace(" hrs", ""));
+    const grouped = new Map();
+
+    filteredRows.forEach((row) => {
+      const current = grouped.get(row.technician) || {
+        technician: row.technician,
+        count: 0,
+        vials: 0,
+        growTime: 0,
+        stdDev: 0,
+        isolationProcessingTime: 0,
+        replatingProcessingTime: 0,
+        freezingProcessingTime: 0,
+        passagingProcessTime: 0,
+        freezings: 0,
+        passagings: 0,
+        discards: 0,
+      };
+
+      current.count += 1;
+      current.vials += row.vials;
+      current.growTime += getHours(row.growTime);
+      current.stdDev += row.stdDev;
+      current.isolationProcessingTime += getHours(row.isolationProcessingTime);
+      current.replatingProcessingTime += getHours(row.replatingProcessingTime);
+      current.freezingProcessingTime += getHours(row.freezingProcessingTime);
+      current.passagingProcessTime += getHours(row.passagingProcessTime);
+      current.freezings += row.freezings;
+      current.passagings += row.passagings;
+      current.discards += row.discards;
+
+      grouped.set(row.technician, current);
+    });
+
+    return Array.from(grouped.values()).map((row) => [
+      row.technician,
+      (row.vials / row.count).toFixed(1),
+      `${Math.round(row.growTime / row.count)} hrs`,
+      (row.stdDev / row.count).toFixed(1),
+      `${(row.isolationProcessingTime / row.count).toFixed(1)} hrs`,
+      `${(row.replatingProcessingTime / row.count).toFixed(1)} hrs`,
+      `${(row.freezingProcessingTime / row.count).toFixed(1)} hrs`,
+      `${(row.passagingProcessTime / row.count).toFixed(1)} hrs`,
+      row.freezings,
+      row.passagings,
+      row.discards,
+    ]);
+  }, [filteredRows]);
 
   return (
     <DashboardShell>
@@ -1668,25 +1742,25 @@ function LabCleanroomReport() {
         onFlaskSizeChange={setFlaskSize}
         onSearchChange={setSearch}
         onTechnicianChange={setTechnician}
+        onTissueTypeChange={setTissueType}
         onTimeRangeChange={setTimeRange}
         search={search}
         technician={technician}
+        tissueType={tissueType}
         timeRange={timeRange}
       />
       <CollapsibleSection title="Visual Summaries">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <VisualCard title="Yield by Flask Size"><SimpleBarVisual label="1-stack" value={18} max={26} /><SimpleBarVisual label="2-stack" value={17} max={26} /><SimpleBarVisual label="5-stack" value={25} max={26} /></VisualCard>
-          <VisualCard title="Time by Tissue Type"><SimpleBarVisual label="ADI" value={77} max={120} /><SimpleBarVisual label="BM" value={91} max={120} /><SimpleBarVisual label="Cord Blood" value={104} max={120} /><SimpleBarVisual label="Cord Tissue" value={96} max={120} /></VisualCard>
           <VisualCard title="Yield by Technician"><SimpleBarVisual label="Technician A" value={18} max={26} /><SimpleBarVisual label="Technician B" value={20} max={26} /><SimpleBarVisual label="Technician C" value={22} max={26} /></VisualCard>
-          <VisualCard title="Freezings vs Passagings"><SimpleBarVisual label="Freezings" value={52} max={90} /><SimpleBarVisual label="Passagings" value={90} max={90} /></VisualCard>
           <VisualCard title="Discards by Tissue"><SimpleBarVisual label="ADI" value={1} max={3} /><SimpleBarVisual label="BM" value={3} max={3} /><SimpleBarVisual label="Cord Blood" value={2} max={3} /><SimpleBarVisual label="Cord Tissue" value={1} max={3} /></VisualCard>
         </div>
       </CollapsibleSection>
       <DataTable
         title="Lab Cleanroom Performance"
-        description="Technician, tissue, flask, growth, yield, and event counts for cleanroom operations."
-        columns={["Technician", "Tissue Type", "Flask Size", "Average Vials Yielded", "Average Time to Grow", "Standard Deviation of Vials Yielded", "Number of Freezings", "Number of Passagings", "Number of Discards"]}
-        rows={filteredRows.map(r => [r.technician, r.tissue, r.flask, r.vials, r.growTime, r.stdDev, r.freezings, r.passagings, r.discards])}
+        description="Technician, growth, yield, process timing, and event counts for cleanroom operations."
+        columns={["Technician", "Average Vials Yielded", "Average Time to Grow", "Standard Deviation of Vials Yielded", "Average Isolation Processing Time", "Average Replating Processing Time", "Average Freezing Processing Time", "Average Passaging Process Time", "Number of Freezings", "Number of Passagings", "Number of Discards"]}
+        rows={technicianRows}
       />
     </DashboardShell>
   );

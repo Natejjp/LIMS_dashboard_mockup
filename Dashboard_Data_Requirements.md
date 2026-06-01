@@ -1,677 +1,663 @@
-# LIMS Dashboard Mockup - Data Requirements and Source Mapping
+ 
 
-Document purpose: outline each page and dashboard in the mockup, the items shown on each page, and the data or calculations needed to power them.
+LIMS Dashboard Mockup  
 
-How to use this document: copy into Google Docs and fill in the blank source-mapping sections with the correct system, table, API, report, or calculation owner.
+Document purpose: outline each page and dashboard in the mockup, the items shown on each page, and the data or calculations needed to power them. 
 
-Source mapping fields to complete for each section:
+1. Application Structure 
 
-- Source system:
-- Source table, API, report, or query:
-- Required source fields:
-- Join keys:
-- Calculation logic:
-- Refresh frequency:
-- Data owner:
-- Validation notes:
-- Open questions:
+Top-level navigation: 
 
-## 1. Application Structure
+Batch Operational Dashboards 
 
-Top-level navigation:
+Lab Operational Dashboard 
 
-- Batch Operational Dashboards
-- Lab Operational Dashboard
-- Reports
+Reports 
 
-Global assumptions:
+Global assumptions: 
 
-- Client ID and Batch ID should be treated as primary linking fields across dashboards.
-- Batch-level flags such as Slow Growth, Quarantine, Discard, Initial/Replate, and Shipment/Order impact should come from shared operational status logic where possible.
-- All date-based filters should use an agreed reference date/time zone and should be consistent across dashboards.
+Client ID and Batch ID should be treated as primary linking fields across dashboards. 
 
-Source system:
+Batch-level flags such as Slow Growth, Quarantine, Discard and Initial/Replate should come from shared operational status logic where possible. 
 
-Required source fields:
+2. Batch Operational Dashboards 
 
-Join keys:
+2.1 Initials Dashboard 
 
-Calculation logic:
+Purpose: show active initial batches and key exception flags. 
 
-Refresh frequency:
+Displayed if a batch has an isolation form BPF-1 and intake form that is completed but does not have freezing form BPF-3. 
 
-Data owner:
+Remove if the batch is frozen or discarded. Freezing form BPF-3, discard frm-42 
 
-Open questions:
+Summary cards: 
 
-## 2. Batch Operational Dashboards
+Initials Growing: count of active initial rows. 
 
-### 2.1 Initials Dashboard
+Slow Growth Flag: count of active initial rows where growth status is not "No". 
 
-Purpose: show active initial batches and key exception flags.
+Intake Issues: count of rows where intake issue is not "None". 
 
-Summary cards:
+Discard Flag: count of rows where discard flag is "Yes". 
 
-- Initials Growing: count of active initial rows.
-- Slow Growth Flag: count of active initial rows where growth status is not "No".
-- Intake Issues: count of rows where intake issue is not "None".
-- Discard Flag: count of rows where discard flag is "Yes".
+Filters and search: 
 
-Filters and search:
+Search by client, batch, sample, or issue. 
 
-- Search by client, batch, sample, or issue.
-- Quick filters from summary cards.
-- Display filter labels: Sample Type, Days Growing, Slow Growth Flag, Discard Flag.
+Quick filters from summary cards. 
 
-Main table columns:
+Main table columns: 
 
-- Client ID
-- Cell Batch ID
-- Sample Type
-- Days Growing
-- Slow Growth
-- Discard
-- Intake Issues
+Client ID 
 
-Calculations:
+Cell Batch ID 
 
-- Days Growing: current date minus growth/seeding/start date.
-- Slow Growth Flag: derive from growth exception status.
-- Discard Flag: derive from discard workflow or disposition status.
-- Intake Issues: derive from intake issue records.
+Sample Type 
 
-Source system:
+Days Growing 
 
-Required source fields:
+Slow Growth 
 
-Join keys:
+Discard 
 
-Calculation logic:
+Intake Issues 
 
-Refresh frequency:
+Calculations: 
 
-Data owner:
+Days Growing:  
 
-Open questions:
+current date minus growth/seeding/start date.  
 
-### 2.2 Slow/No Growth Dashboard
+Slow Growth Flag:  
 
-Purpose: show batches with slow or no growth exceptions.
+If the Batch is also in the slow/no growth dashboard 
 
-Summary cards:
+Discard Flag:  
 
-- Slow/No Growth: count of all growth exception rows.
-- Initial Batches: count where Initial flag is "Yes".
-- Replates: count where stage is "Replate".
-- Quarantine Flag: count where Quarantine flag is "Yes".
+If the batch has FRM-42 
 
-Filters and search:
+Intake Issues:  
 
-- Search by client, batch, or stage.
-- Quick filters from summary cards.
-- Display filter labels: Initial/Replate, Days Growing, Initial Flag, Quarantine Flag.
+derive from intake issue records. 
 
-Main table columns:
+2.2 Slow/No Growth Dashboard 
 
-- Client ID
-- Batch ID
-- Initial or Replate
-- Days Growing
-- Initial
-- Quarantine
+Purpose: show batches with slow or no growth exceptions. 
 
-Calculations:
+Displayed if a batch has a slow growth based on the below. 
 
-- Days Growing: current date minus growth/seeding/start date.
-- Initial/Replate: derive from batch process stage or passage/replate workflow.
-- Quarantine flag: derive from current quarantine status.
+Initials ADI: More than 18 days since seeding date 
 
-Source system:
+Initials NB: More than 20 days since seeding date 
 
-Required source fields:
+2 stack: More than 5 days since the seeding date 
 
-Join keys:
+5 stack: More than 8 days seince the seeding date 
 
-Calculation logic:
+Remove if the batch is frozen or discarded. Freezing form BPF-3, discard frm-42 
 
-Refresh frequency:
+ 
 
-Data owner:
+Summary cards: 
 
-Open questions:
+Slow/No Growth: count of all growth exception rows. 
 
-### 2.3 Quarantine Dashboard
+Initial Batches: count where the Initial or Replate is "Initial". 
 
-Purpose: show batches currently in quarantine and related release timing.
+Replates: count where the Initial or Replate is "Replate". 
 
-Summary cards:
+Quarantine Flag: count where Quarantine flag is "Yes". 
 
-- In Quarantine: count of quarantined batches.
-- Slow Growth Flag: count of quarantined batches also flagged for growth issues.
+Filters and search: 
 
-Filters and search:
+Search by client, batch, or stage. 
 
-- Search by client, batch, reason, or release date.
-- Quick filters from summary cards.
-- Display filter labels: Sample Type, Reason, Initial/Replate, Flask/Vials, Release Date.
+Quick filters from summary cards. 
 
-Visual summaries:
+Main table columns: 
 
-- Quarantine by Reason.
-- Release Timing.
+Client ID 
 
-Main table columns:
+Batch ID 
 
-- Cell Batch ID
-- Client ID
-- Sample Type
-- Date Placed
-- Reason
-- Expected Release
-- Initial/Replate
-- Flask/Vials
-- Slow Growth
-- Days Needed
+Initial or Replate 
 
-Calculations:
+Days Growing 
 
-- Days Needed: expected release date minus current date. Show "Today" when zero and "N/A" when expected release is unavailable.
-- Slow Growth flag: derive from growth exception status.
-- Quarantine reason: derive from QA hold, sterility, contamination, intake discrepancy, or other quarantine reason codes.
+Quarantine 
 
-Source system:
+Discard 
 
-Required source fields:
+Calculations: 
 
-Join keys:
+Days Growing:  
 
-Calculation logic:
+current date minus growth/seeding/start date. 
 
-Refresh frequency:
+Initial/Replate:  
 
-Data owner:
+derive from batch process stage or passage/replate workflow. 
 
-Open questions:
+If the batch has Isolation BPF-9 form then it would be “Initial” 
 
-### 2.4 Discard Dashboard
+If the batch has Replating BPF-8 form then it would be ”Replate” 
 
-Purpose: show discarded flasks, vials, and related flags.
+NEED logic for when passaging occurs. A batch that has the passaging form could have a parent batch that was an initial or replate 
 
-Summary cards:
+Quarantine flag:  
 
-- Discards: count of all discard records.
-- Flask Discards: count where discard type is Flask.
-- Vial Discards: count where discard type is Vials.
-- Quarantine Flag: count where discarded material was quarantined.
+If batch is displayed in quarantine table 
 
-Filters and search:
+Discard flag 
 
-- Search by client, batch, type, or reason.
-- Quick filters from summary cards.
-- Display filter labels: Discard Type, Reason, Initial Flag, Quarantine Flag.
+If batch is displayed in discard table 
 
-Visual summaries:
+2.3 Quarantine Dashboard 
 
-- Discard Type.
-- Top Discard Reasons.
+Purpose: show batches currently in quarantine and related release timing. 
 
-Main table columns:
+Displayed if batch has a sterility testing investigation form FRM-11.  
 
-- Client ID
-- Cell Batch ID
-- Discard Type
-- Reason for Discard
-- Initial
-- Quarantine
+Removed if sterility testing FRM-11 passes or fails or if discarded FRM-42. 
 
-Calculations:
+Summary cards: 
 
-- Discard type: derive from discarded inventory/material type.
-- Reason for discard: derive from discard workflow reason.
-- Initial flag: derive from batch process stage.
-- Quarantine flag: derive from quarantine history or current status.
+In Quarantine: count of quarantined batches. 
 
-Source system:
+Slow Growth Flag: count of quarantined batches also flagged for growth issues. 
 
-Required source fields:
+Filters and search: 
 
-Join keys:
+Search by client, batch, reason, or release date. 
 
-Calculation logic:
+Quick filters from summary cards. 
 
-Refresh frequency:
+Visual summaries: 
 
-Data owner:
+Quarantine by Reason. 
 
-Open questions:
+Release Timing. 
 
-## 3. Lab Operational Dashboard
+Main table columns: 
 
-### 3.1 Lab Manufacturing / Schedule
+Cell Batch ID 
 
-Purpose: show active and upcoming lab manufacturing tasks.
+Client ID 
 
-Summary cards:
+Sample Type 
 
-- Scheduled Tasks: count of all schedule rows.
-- Available Tasks: count where status is Available.
-- In Process: count where status is In Process.
-- Completed: count where status is Completed.
-- Active Technicians: count of assigned technicians for the current day, excluding unassigned rows.
+Date Placed 
 
-Filters and search:
+Reason 
 
-- Search by process, status, technician, client, or batch.
-- Quick filters from summary cards.
-- Display filter labels: Date / Time Span, Process, Status, Technician, Sample Type.
+Expected Release 
 
-Visual summaries:
+Initial/Replate 
 
-- Task Count by Process.
-- Task Status Breakdown.
-- Technician Workload.
-- Time Blocks.
+Flask/Vials 
 
-Timeline schedule cards:
+Slow Growth 
 
-- Process
-- Status
-- Batch ID
-- Technician, when assigned
-- Current LIMS section
+Days Needed 
 
-Manufacturing Schedule table columns:
+Calculations: 
 
-- Process
-- Status
-- Process Start Time
-- Process End Time
-- Technician
-- Client ID
-- Cell Batch ID
-- Sample Type
-- Current LIMS Section
-- Notes
+Date Placed: 
 
-Status rules:
+Date the sterility testing investigation FRM-11 started. 
 
-- Available: Process Start Time, Process End Time, and Technician should be blank or "-".
-- In Process: Process Start Time should be populated; Process End Time should be blank or "-".
-- Completed: Process Start Time and Process End Time should both be populated.
+Expected Release: 
 
-Calculations:
+Fourteen days from the date placed. 
 
-- Scheduled Tasks: count of task records in selected scope.
-- Active Technicians: distinct technician count for current day where technician is assigned.
-- Time Blocks: group tasks by scheduled time or process window.
+Initial/Replate:  
 
-Source system:
+derive from batch process stage or passage/replate workflow. 
 
-Required source fields:
+If the batch has Isolation BPF-9 form then it would be “Initial” 
 
-Join keys:
+If the batch has Replating BPF-8 form then it would be ”Replate” 
 
-Calculation logic:
+NEED logic for when passaging occurs. A batch that has the passaging form could have a parent batch that was an initial or replate 
 
-Refresh frequency:
+ 
 
-Data owner:
+2.4 Discard Dashboard 
 
-Open questions:
+Purpose: show discarded flasks, vials, and related flags. 
 
-### 3.2 Incubator Dashboard
+Displayed if batch has FRM-42.  
 
-Purpose: show batches currently represented in incubator operations, plus a capacity visual by incubator and rack.
+Summary cards: 
 
-Ruleset shown at top of page:
+Discards: count of all discard records. 
 
-- Entry rule: plate is in the confluence check process.
-- Entry rule: batch had an Isolation, Replate, or Passage performed to it.
-- Exit rule: discard of plate.
-- Exit rule: freezing of plate or batch.
+Flask Discards: count where discard type is Flask. 
 
-View toggle:
+Vial Discards: count where discard type is Vials. 
 
-- Table View: detailed incubator batch table.
-- Capacity View: visual layout of incubators and racks with current Batch IDs under each rack.
+Quarantine Flag: count where discarded material was quarantined. 
 
-Capacity View:
+Filters and search: 
 
-- Incubator 1 and Incubator 2.
-- Six racks per incubator.
-- Each rack shows current Batch IDs or "Open space".
-- Rack status states: Available, Occupied, Near Capacity.
-- Supporting rack information shown in visual: owner/technician, sample type, days, last updated.
+Search by client, batch, type, or reason. 
 
-Incubator table columns:
+Quick filters from summary cards. 
 
-- Incubator
-- Rack Space
-- Client ID
-- Batch ID
-- Passage #
-- Seeding Date
-- Tissue Type
-- Replate/Initial
-- Last Confluency
-- Days Incubator
-- Last Feeding Date
-- Last Feeding Type (Complete/ Partial)
-- Flask Size
+Visual summaries: 
 
-Calculations:
+Discard Type. 
 
-- Days Incubator: current date minus seeding date or incubator entry date.
-- Replate/Initial: derive from batch process stage or passage workflow.
-- Last Confluency: most recent confluence check result.
-- Last Feeding Date and Type: most recent feeding event associated with the batch/plate.
-- Rack status: derive from rack occupancy rules and capacity thresholds.
+Top Discard Reasons. 
 
-Source system:
+Main table columns: 
 
-Required source fields:
+Client ID 
 
-Join keys:
+Cell Batch ID 
 
-Calculation logic:
+Discard Type 
 
-Refresh frequency:
+Reason for Discard 
 
-Data owner:
+Initial 
 
-Open questions:
+Quarantine 
 
-## 4. Reports
+Calculations: 
 
-### 4.1 Sample Intake Issues Report
+Discard type:  
 
-Purpose: show samples with intake condition, packaging, delay, temperature, or low-volume flags.
+Field on FRM-42. 
 
-Filters:
+Reason for discard:  
 
-- Search by client or batch ID.
-- Time Range: Last 30 days, Last 7 days, This month, Last quarter, Custom range.
-- Tissue Type: All tissue types, ADI, BM, NB - Cord Blood, NB - Cord Tissue.
-- Issue Type: All issue types, Delayed sample, Temperature issue, Incorrect ice packs, Missing parafilm, Low volume.
-- Clinic: All clinics, Clinic A, Clinic B, Clinic C.
+Field on FRM-42 
 
-Main table columns:
+Initial flag:  
 
-- Client ID
-- Cell Batch ID
-- Clinic
-- Issue Type
-- Tissue Type
-- Sample Delayed by How Many Days
-- Temperature of Sample
-- Correct Ice Packs Used
-- Parafilm Used
-- Low Volume
+If the batch is in initial dashboard. 
 
-Calculations:
+Quarantine flag:  
 
-- Issue Type: may be a multi-value derived field from intake checks.
-- Sample Delayed by How Many Days: actual received date minus expected received date.
-- Temperature issue: derive from accepted temperature range.
-- Correct Ice Packs Used, Parafilm Used, Low Volume: derive from intake checklist.
+If batch is displayed in quarantine table 
 
-Source system:
+3. Lab Operational Dashboard 
 
-Required source fields:
+3.1 Lab Manufacturing / Schedule 
 
-Join keys:
+Purpose: show active and upcoming lab manufacturing tasks. 
 
-Calculation logic:
+Summary cards: 
 
-Refresh frequency:
+Total Tasks: count of all tasks rows. 
 
-Data owner:
+Available Tasks: count where status is Available. 
 
-Open questions:
+In Process: count where status is In Process. 
 
-### 4.2 Client Lineage / Batch History Report
+Completed: count where status is Completed. 
 
-Purpose: allow user to search by Client ID and see client summary, batches, processing metrics, intake information, current banking information, and quality events.
+Active Technicians: count of assigned technicians for the current day, excluding unassigned rows. 
 
-Client lookup:
+Filters and search: 
 
-- Search one Client ID.
-- Selected client drives all tables on the page.
+Search by process, status, technician, client, or batch. 
 
-Client Summary table columns:
+Quick filters from summary cards. 
 
-- Client ID
-- Number of Tissue Samples
-- Tissue Types
-- Total Number of Batches
-- Number of Batches Available
+Visual summaries: 
 
-Client Batches table:
+Task Count by Process. 
 
-- Includes table-specific filters in the table header.
+Task Status Breakdown. 
 
-Client Batches filters:
+Technician Workload. 
 
-- Time Frame: All time, Last 7 days, Last 30 days.
-- Flask Size: dynamically derived from selected client's batch rows.
-- Tissue Type: dynamically derived from selected client's batch rows.
+Time Blocks. 
 
-Client Batches table columns:
+Timeline schedule cards: 
 
-- Client Batch
-- Tissue Type
-- Flask Size
-- Processing Date
-- Freezing Date
-- Slow Growth
-- Quarantine
-- Discard
+Process 
 
-Processing Information table columns:
+Status 
 
-- Client ID
-- Flask Size
-- Average Yield
-- Average Time to Grow(Hr)
-- Standard Dev
-- Total Batches
+Batch ID 
 
-Intake Information table columns:
+Technician, when assigned 
 
-- Client ID
-- Initial Intake Issues
-- Number of Tissue Samples
-- Tissue Type
+Current LIMS section 
 
-Current Banking Information table columns:
+Manufacturing Schedule table columns: 
 
-- Client ID
-- Master Bank Doses
-- Working Bank Doses
-- Number of Doses per Passage
-- Number of Batches Available
+Process 
 
-Quality Events table columns:
+Status 
 
-- Client ID
-- Batch ID
-- Batch-Level Quality Events
-- Shipping-Level Quality Events
-- Export Report
+Process Start Time 
 
-Quality Events actions:
+Process End Time 
 
-- Export Report button per event to export a PDF for that quality event.
+Technician 
 
-Calculations:
+Client ID 
 
-- Number of Tissue Samples: count of tissue sample records for selected client.
-- Total Number of Batches: count of all batches associated with selected client.
-- Number of Batches Available: count of batches with available inventory/status.
-- Average Yield: average vials yielded by flask size.
-- Average Time to Grow(Hr): average grow time by flask size.
-- Standard Dev: standard deviation of vials yielded by flask size.
-- Total Batches: count of batches by flask size.
-- Slow Growth, Quarantine, Discard: derive from batch-level exception/status workflows.
-- Export Report: generate a PDF using selected Client ID, Batch ID, and quality event details.
+Cell Batch ID 
 
-Source system:
+Sample Type 
 
-Required source fields:
+Calculations: 
 
-Join keys:
+Tasks: count of task records in selected scope. 
 
-Calculation logic:
+On this page how do we consider things “Available”? 
 
-Refresh frequency:
+Any batches that are available in the Tasks Pages of the LIMS.  
 
-Data owner:
+3.2 Incubator Dashboard 
 
-Open questions:
+Purpose: show batches currently represented in incubator operations, plus a capacity visual by incubator and rack. 
 
-### 4.3 Lab Cleanroom Report
+Batch display and removed based on if: 
 
-Purpose: show cleanroom performance across technicians, tissue types, flask sizes, yield, growth time, and process event counts.
+Entry rule: plate is in the confluence check process. 
 
-Summary cards:
+Entry rule: batch had an Isolation, Replate, or Passage performed to it. 
 
-- Avg Vials Yielded.
-- Avg Confluency.
-- Avg Time to Grow.
-- Std Dev Yield.
-- Freezings.
-- Passagings.
-- Discards.
+Exit rule: discard of plate. 
 
-Filters:
+Exit rule: freezing of plate or batch. 
 
-- Search.
-- Time Range: All time, Last 7 days, Last 30 days.
-- Flask Size: All flask sizes, 1-stack, 2-stack, 5-stack.
-- Technician: All technicians, Technician A, Technician B, Technician C.
+Incubator table columns: 
 
-Visual summaries:
+Incubator 
 
-- Yield by Flask Size.
-- Time by Tissue Type.
-- Yield by Technician.
-- Freezings vs Passagings.
-- Discards by Tissue.
+Rack Space 
 
-Main table columns:
+Client ID 
 
-- Technician
-- Tissue Type
-- Flask Size
-- Average Vials Yielded
-- Average Time to Grow
-- Standard Deviation of Vials Yielded
-- Number of Freezings
-- Number of Passagings
-- Number of Discards
+Batch ID 
 
-Calculations:
+Passage # 
 
-- Avg Vials Yielded: average vials yielded across filtered rows.
-- Avg Confluency: average confluency percentage across filtered rows.
-- Avg Time to Grow: average grow time in hours across filtered rows.
-- Std Dev Yield: standard deviation of vials yielded.
-- Freezings, Passagings, Discards: sum of event counts across filtered rows.
-- Visual summaries: aggregate by flask size, tissue type, technician, process event type, or discard tissue.
+Seeding Date 
 
-Source system:
+Tissue Type 
 
-Required source fields:
+Replate/Initial 
 
-Join keys:
+Last Confluency 
 
-Calculation logic:
+Days Incubator 
 
-Refresh frequency:
+Last Feeding Date 
 
-Data owner:
+Last Feeding Type (Complete/ Partial) 
 
-Open questions:
+Flask Size 
 
-## 5. Shared Data Definitions
+Calculations: 
 
-Recommended shared dimensions:
+Replate/Initial: derive from batch process stage or passage workflow. 
 
-- Client ID
-- Batch ID
-- Tissue Type
-- Sample Type
-- Flask Size
-- Passage #
-- Initial/Replate
-- Technician
-- Process
-- Status
-- Date fields
-- Current LIMS section
+Last Confluency: most recent confluence check result. 
 
-Recommended shared flags:
+Last Feeding Date and Type: most recent feeding event associated with the batch/plate. 
 
-- Slow Growth
-- Quarantine
-- Discard
-- Initial
-- Available
-- In Process
-- Completed
+4. Reports 
 
-Recommended date calculations:
+4.1 Sample Intake Issues Report 
 
-- Days Growing = current date minus growth start date.
-- Days Incubator = current date minus seeding date or incubator entry date.
-- Days Needed = expected release date minus current date.
-- Average Time to Grow(Hr) = average of completed grow duration in hours.
+Purpose: show samples with intake condition, packaging, delay, temperature, or low-volume flags. 
 
-Recommended event sources:
+Displayed if there are any warnings in the INTAKE form 
 
-- Intake events.
-- Isolation events.
-- Replate events.
-- Passage events.
-- Feeding events.
-- Confluence checks.
-- Quarantine events.
-- Discard events.
-- Freezing events.
-- Shipping/order events.
-- Quality events.
+Filters: 
 
-Source system:
+Search by client or batch ID. 
 
-Required source fields:
+Time Range: Last 30 days, Last 7 days, This month, Last quarter, Custom range. 
 
-Join keys:
+Tissue Type: All tissue types, ADI, BM, NB - Cord Blood, NB - Cord Tissue. 
 
-Calculation logic:
+Issue Type: All issue types, Delayed sample, Temperature issue, Incorrect ice packs, Missing parafilm, Low volume. 
 
-Refresh frequency:
+Clinic: All clinics, Clinic A, Clinic B, Clinic C. (NOT IMPLEMENTED IN LIMS YET) 
 
-Data owner:
+Main table columns: 
 
-Open questions:
+Client ID 
 
-## 6. Implementation Notes for Developers
+Cell Batch ID 
 
-Recommended approach:
+Clinic 
 
-- Build a shared batch fact view keyed by Client ID and Batch ID.
-- Build separate event tables or views for intake, manufacturing process steps, incubator activity, quality events, freezing, discard, quarantine, and shipping/order activity.
-- Use derived status fields consistently across dashboards so counts and flags reconcile.
-- Keep page-level filters and table-level filters scoped clearly. For example, Client Batches filters should only filter Client Batches.
-- Define a standard "current date" and time zone for mockups, testing, and production calculations.
-- Add QA checks for count reconciliation between summary cards and table rows.
+Issue Type 
 
-Open implementation decisions:
+Tissue Type 
 
-- Should dashboards show only active records, all historical records, or both?
-- What is the authoritative source for Client ID and Batch ID?
-- What is the authoritative source for current batch status?
-- How should multiple simultaneous flags be prioritized visually?
-- Should PDF export be generated client-side, server-side, or through an existing reporting tool?
-- What role permissions are required for quality event export?
+Sample Delayed by How Many Days 
 
+Temperature of Sample 
+
+Correct Ice Packs Used 
+
+Parafilm Used 
+
+Low Volume 
+
+Calculations: 
+
+Issue Type: may be a multi-value derived field from intake checks. 
+
+Sample Delayed by How Many Days: actual received date minus expected received date. 
+
+Temperature issue: derive from accepted temperature range. 
+
+Correct Ice Packs Used, Parafilm Used, Low Volume: derive from intake checklist. 
+
+4.2 Client Lineage / Batch History Report 
+
+Purpose: allow user to search by Client ID and see client summary, batches, processing metrics, intake information, current banking information, and quality events. 
+
+Client lookup: 
+
+Search one Client ID. 
+
+Selected client drives all tables on the page. 
+
+Client Summary table columns: 
+
+Client ID 
+
+Number of Tissue Samples 
+
+Tissue Types 
+
+Total Number of Batches 
+
+Number of Batches Available 
+
+Client Batches table: 
+
+Includes table-specific filters in the table header. 
+
+Client Batches filters: 
+
+Time Frame: All time, Last 7 days, Last 30 days. 
+
+Flask Size: dynamically derived from selected client's batch rows. 
+
+Tissue Type: dynamically derived from selected client's batch rows. 
+
+Client Batches table columns: 
+
+Client Batch 
+
+Tissue Type 
+
+Flask Size 
+
+Processing Date 
+
+Freezing Date 
+
+Vials Yielded 
+
+Slow Growth 
+
+Quarantine 
+
+Discard 
+
+Processing Information table columns: 
+
+Client ID 
+
+Flask Size 
+
+Average Yield 
+
+Average Time to Grow (Hr) 
+
+Standard Dev 
+
+Total Batches 
+
+Intake Information table columns: 
+
+Client ID 
+
+Initial Intake Issues 
+
+Number of Tissue Samples 
+
+Tissue Type 
+
+Current Banking Information table columns: 
+
+Client ID 
+
+Master Bank Doses 
+
+Working Bank Doses 
+
+Number of Doses per Passage 
+
+Number of Batches Available 
+
+Quality Events table columns: 
+
+Client ID 
+
+Batch ID 
+
+Batch-Level Quality Events 
+
+Shipping-Level Quality Events 
+
+Export Report 
+
+Quality Events actions: 
+
+Export Report button per event to export a PDF for that quality event. 
+
+Calculations: 
+
+Number of Tissue Samples: count of tissue sample records for selected client. 
+
+Total Number of Batches: count of all batches associated with selected client. 
+
+Number of Batches Available: count of batches with available inventory/status. 
+
+Average Yield: average vials yielded by flask size. 
+
+Average Time to Grow (Hr): average grow time by flask size. 
+
+Standard Dev: standard deviation of vials yielded by flask size. 
+
+Total Batches: count of batches by flask size. 
+
+Slow Growth, Quarantine, Discard: derive from batch-level exception/status workflows. 
+
+Export Report: generate a PDF using selected Client ID, Batch ID, and quality event details. 
+
+4.3 Lab Cleanroom Report 
+
+Purpose: show cleanroom performance across technicians, tissue types, flask sizes, yield, growth time, and process event counts. 
+
+Summary cards: 
+
+Avg Vials Yielded. 
+
+Avg Confluency. 
+
+Avg Time to Grow. 
+
+Std Dev Yield. 
+
+Freezings. 
+
+Passagings. 
+
+Discards. 
+
+Filters: 
+
+Search. 
+
+Time Range: All time, Last 7 days, Last 30 days. 
+
+Tissue Type 
+
+Flask Size: All flask sizes, 1-stack, 2-stack, 5-stack. 
+
+Technician: All technicians, Technician A, Technician B, Technician C. 
+
+Visual summaries: 
+
+Yield by Flask Size. 
+
+Yield by Technician. 
+
+Discards by Tissue. 
+
+Main table columns: 
+
+Technician 
+
+Average Vials Yielded 
+
+Average Time to Grow 
+
+Standard Deviation of Vials Yielded 
+
+Number of Freezings 
+
+Number of Passagings 
+
+Number of Discards 
+
+Average Isolation Process Time 
+
+Average Replate Process Time 
+
+Average Freezing Process Time 
+
+Average Passage Process Time 
+
+ 
+
+Calculations: 
+
+Avg Vials Yielded: average vials yielded across filtered rows. 
+
+Avg Confluency: average confluency percentage across filtered rows. 
+
+Avg Time to Grow: average grow time in hours across filtered rows. 
+
+Std Dev Yield: standard deviation of vials yielded. 
+
+Freezings, Passagings, Discards: sum of event counts across filtered rows. 
+
+Visual summaries: aggregate by flask size, tissue type, technician, process event type, or discard tissue. 
