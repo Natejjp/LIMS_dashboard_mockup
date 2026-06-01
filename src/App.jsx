@@ -262,6 +262,7 @@ const slowGrowthRows = [
     shipment: "No",
     initial: "Yes",
     quarantine: "Yes",
+    discard: "No",
   },
   {
     client: "H4205",
@@ -271,6 +272,7 @@ const slowGrowthRows = [
     shipment: "Yes",
     initial: "No",
     quarantine: "Yes",
+    discard: "No",
   },
   {
     client: "H4150",
@@ -280,6 +282,7 @@ const slowGrowthRows = [
     shipment: "Yes",
     initial: "Yes",
     quarantine: "No",
+    discard: "No",
   },
   {
     client: "H4211",
@@ -289,6 +292,7 @@ const slowGrowthRows = [
     shipment: "Yes",
     initial: "Yes",
     quarantine: "No",
+    discard: "Yes",
   },
 ];
 
@@ -1178,7 +1182,7 @@ function CollapsibleSection({ title, children, className = "" }) {
   );
 }
 
-function FilterStrip({ filters = [], searchValue, onSearchChange, placeholder = "Search client, batch, or order", showTags = true }) {
+function FilterStrip({ filters = [], searchValue, onSearchChange, placeholder = "Search client, batch, or order", showTags = true, controls = null }) {
   const inputProps = onSearchChange
     ? {
         value: searchValue,
@@ -1198,6 +1202,7 @@ function FilterStrip({ filters = [], searchValue, onSearchChange, placeholder = 
             {...inputProps}
           />
         </label>
+        {controls}
         {showTags && (
           <div className="flex flex-wrap gap-2">
             {filters.map((filter) => <Badge key={filter} tone="neutral">{filter}</Badge>)}
@@ -1484,7 +1489,7 @@ function SlowGrowthDashboard() {
 
       const matchesQuickFilter =
         quickFilter === "All" ||
-        (quickFilter === "Initial Batches" && row.initial === "Yes") ||
+        (quickFilter === "Initial Batches" && row.stage === "Initial") ||
         (quickFilter === "Replates" && row.stage === "Replate") ||
         (quickFilter === "Quarantine Flag" && row.quarantine === "Yes");
 
@@ -1500,18 +1505,18 @@ function SlowGrowthDashboard() {
     <DashboardShell>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <KpiCard title="Slow/No Growth" value={slowGrowthRows.length} note="Show all growth exceptions" icon={TrendingDown} active={quickFilter === "All"} onClick={() => setQuickFilter("All")} />
-        <KpiCard title="Initial Batches" value={slowGrowthRows.filter(r => r.initial === "Yes").length} note="Initial growth concerns" icon={FlaskConical} active={quickFilter === "Initial Batches"} onClick={() => toggleQuickFilter("Initial Batches")} />
+        <KpiCard title="Initial Batches" value={slowGrowthRows.filter(r => r.stage === "Initial").length} note="Initial growth concerns" icon={FlaskConical} active={quickFilter === "Initial Batches"} onClick={() => toggleQuickFilter("Initial Batches")} />
         <KpiCard title="Replates" value={slowGrowthRows.filter(r => r.stage === "Replate").length} note="Replate growth concerns" icon={Layers} active={quickFilter === "Replates"} onClick={() => toggleQuickFilter("Replates")} />
         <KpiCard title="Quarantine Flag" value={slowGrowthRows.filter(r => r.quarantine === "Yes").length} note="Also quarantined" icon={AlertTriangle} active={quickFilter === "Quarantine Flag"} onClick={() => toggleQuickFilter("Quarantine Flag")} />
       </div>
       <FilterStrip
-        filters={[`Showing ${filteredRows.length} of ${slowGrowthRows.length}`, quickFilter === "All" ? "All Growth Exceptions" : quickFilter, "Initial/Replate", "Days Growing", "Initial Flag", "Quarantine Flag"]}
+        filters={[`Showing ${filteredRows.length} of ${slowGrowthRows.length}`, quickFilter === "All" ? "All Growth Exceptions" : quickFilter, "Initial/Replate", "Days Growing", "Quarantine Flag", "Discard Flag"]}
         onSearchChange={setSearch}
         placeholder="Search client, batch, or stage"
         searchValue={search}
         showTags={false}
       />
-      <DataTable columns={["Client ID", "Batch ID", "Initial or Replate", "Days Growing", "Initial", "Quarantine"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="blue">{r.stage}</Badge>, `${r.days} days`, <FlagBadge value={r.initial} />, <FlagBadge value={r.quarantine} />])} />
+      <DataTable columns={["Client ID", "Batch ID", "Initial or Replate", "Days Growing", "Quarantine", "Discard"]} rows={filteredRows.map(r => [r.client, r.batch, <Badge tone="blue">{r.stage}</Badge>, `${r.days} days`, <FlagBadge value={r.quarantine} />, <FlagBadge value={r.discard} />])} />
     </DashboardShell>
   );
 }
@@ -1947,11 +1952,17 @@ function LabManufacturingScheduleDashboard() {
   const activeTechs = new Set(labScheduleRows.filter((row) => row.date === "05/28/2026" && row.technician !== "-").map((row) => row.technician)).size;
   const [search, setSearch] = useState("");
   const [quickFilter, setQuickFilter] = useState("All");
+  const [timeRange, setTimeRange] = useState("Today");
 
   const filteredRows = useMemo(() => {
     const query = search.trim().toLowerCase();
+    const currentDate = new Date("2026-05-28T12:00:00");
+    const rangeDays = timeRange === "Today" ? 0 : timeRange === "7 days" ? 7 : 30;
 
     return labScheduleRows.filter((row) => {
+      const rowDate = new Date(`${row.date} 12:00:00`);
+      const daysAhead = (rowDate - currentDate) / (1000 * 60 * 60 * 24);
+      const matchesTimeRange = daysAhead >= 0 && daysAhead <= rangeDays;
       const matchesSearch =
         !query ||
         [row.date, row.time, row.process, row.status, row.technician, row.client, row.batch, row.sample, row.section, row.notes]
@@ -1966,9 +1977,9 @@ function LabManufacturingScheduleDashboard() {
         (quickFilter === "Completed" && row.status === "Completed") ||
         (quickFilter === "Active Technicians" && row.date === "05/28/2026" && row.technician !== "-");
 
-      return matchesSearch && matchesQuickFilter;
+      return matchesSearch && matchesTimeRange && matchesQuickFilter;
     });
-  }, [quickFilter, search]);
+  }, [quickFilter, search, timeRange]);
 
   const toggleQuickFilter = (filterName) => {
     setQuickFilter((current) => (current === filterName ? "All" : filterName));
@@ -1988,6 +1999,7 @@ function LabManufacturingScheduleDashboard() {
         onSearchChange={setSearch}
         placeholder="Search process, status, technician, client, or batch"
         searchValue={search}
+        controls={<ControlledSelectField label="Time Range" onChange={setTimeRange} options={["Today", "7 days", "30 days"]} value={timeRange} />}
         showTags={false}
       />
       <CollapsibleSection title="Visual Summaries">
