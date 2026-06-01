@@ -1071,7 +1071,6 @@ function DashboardTabs({ active, setActive }) {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2 rounded-lg"><Filter size={16} /> Filters</Button>
           <Button className="gap-2 rounded-lg"><ArrowUpRight size={16} /> Export</Button>
         </div>
       </div>
@@ -1825,7 +1824,6 @@ function ReportsPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2 rounded-lg"><Filter size={16} /> Filters</Button>
           <Button className="gap-2 rounded-lg"><FileText size={16} /> Export Report</Button>
         </div>
       </div>
