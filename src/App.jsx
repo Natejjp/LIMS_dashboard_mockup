@@ -212,6 +212,7 @@ const shippingRows = [
 const initialRows = [
   {
     client: "H3988",
+    clinic: "Clinic B",
     batch: "H3988-CB01-P0-P20260503-01",
     sample: "NB - Cord Blood",
     days: 17,
@@ -223,6 +224,7 @@ const initialRows = [
   },
   {
     client: "H4150",
+    clinic: "Clinic A",
     batch: "H4150-CT01-P0-P20260511-01",
     sample: "NB - Cord Tissue",
     days: 9,
@@ -234,6 +236,7 @@ const initialRows = [
   },
   {
     client: "H4302",
+    clinic: "Clinic C",
     batch: "H4302-A01-P0-P20260512-01",
     sample: "ADI",
     days: 8,
@@ -245,6 +248,7 @@ const initialRows = [
   },
   {
     client: "H4211",
+    clinic: "Clinic B",
     batch: "H4211-BM01-P0-P20260509-01",
     sample: "BM",
     days: 12,
@@ -1323,7 +1327,7 @@ function InitialsDashboard() {
       const matchesTissueType = tissueType === "All tissue types" || row.sample === tissueType;
       const matchesSearch =
         !query ||
-        [row.client, row.batch, row.sample, row.growth, row.intake]
+        [row.client, row.clinic, row.batch, row.sample, row.growth, row.intake]
           .join(" ")
           .toLowerCase()
           .includes(query);
@@ -1362,7 +1366,7 @@ function InitialsDashboard() {
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Initials by Sample Type</h2><SimpleBarVisual label="ADI" value={1} max={3} /><SimpleBarVisual label="BM" value={1} max={3} /><SimpleBarVisual label="Cord Blood" value={1} max={3} /><SimpleBarVisual label="Cord Tissue" value={1} max={3} /></CardContent></Card>
         <Card className="rounded-lg shadow-sm"><CardContent className="space-y-3 p-5"><h2 className="text-lg font-semibold">Days Growing Buckets</h2><SimpleBarVisual label="0–7 days" value={0} max={4} /><SimpleBarVisual label="8–14 days" value={3} max={4} /><SimpleBarVisual label="15+ days" value={1} max={4} /></CardContent></Card>
       </div>
-      <DataTable title="Initials" columns={["Client ID", "Cell Batch ID", "Sample Type", "Days Growing", "Passaged", "Slow Growth", "Intake Issues"]} rows={filteredRows.map(r => [r.client, r.batch, r.sample, `${r.days} days`, <FlagBadge value={r.passaged} />, <FlagBadge value={r.growth === "No" ? "No" : "Yes"} />, r.intake])} />
+      <DataTable title="Initials" columns={["Client ID", "Clinic Name", "Cell Batch ID", "Sample Type", "Days Growing", "Passaged", "Slow Growth", "Intake Issues"]} rows={filteredRows.map(r => [r.client, r.clinic, r.batch, r.sample, `${r.days} days`, <FlagBadge value={r.passaged} />, <FlagBadge value={r.growth === "No" ? "No" : "Yes"} />, r.intake])} />
     </DashboardShell>
   );
 }
